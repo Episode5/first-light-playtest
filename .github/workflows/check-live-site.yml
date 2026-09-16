@@ -1,0 +1,34 @@
+name: Verify live First Light site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/check-live-site.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify deployed site and game modules over HTTPS
+        shell: bash
+        run: |
+          set -euo pipefail
+          base='https://episode5.github.io/first-light-playtest/'
+          mkdir -p /tmp/first-light-live/dist/core
+          for file in index.html app.mjs seed.mjs dist/core/resolveRecipe.js; do
+            status=$(curl --fail --location --silent --show-error --retry 12 --retry-all-errors --retry-delay 5 --max-time 20 --write-out '%{http_code}' --output "/tmp/first-light-live/$file" "$base$file")
+            test "$status" = 200
+            test -s "/tmp/first-light-live/$file"
+            printf 'PASS: HTTP %s %s (%s bytes)\n' "$status" "$base$file" "$(wc -c < "/tmp/first-light-live/$file")"
+          done
+          grep -Fq 'FIRST LIGHT' /tmp/first-light-live/index.html
+          grep -Fq './app.mjs' /tmp/first-light-live/index.html
+          grep -Fq "./dist/core/resolveRecipe.js" /tmp/first-light-live/app.mjs
+          grep -Fq 'export const STARTER_IDS' /tmp/first-light-live/seed.mjs
+          grep -Fq 'export function resolveRecipe' /tmp/first-light-live/dist/core/resolveRecipe.js
+          echo 'PASS: live HTML and required JavaScript modules are reachable and contain expected game markers.'
