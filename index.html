@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#09131d">
+  <meta name="description" content="First Light: a free experimental element-combination discovery game.">
+  <title>First Light — Playtest</title>
+  <style>
+    :root {font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#ebf2ee;background:#09131d;font-synthesis:none}
+    *{box-sizing:border-box} body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 0%,#204b48 0%,transparent 37%),radial-gradient(ellipse at 95% 8%,#242a50 0%,transparent 34%),#09131d}
+    button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #f5d58f;outline-offset:3px}
+    .shell{max-width:1250px;padding:28px 22px 50px;margin:auto}.top{display:flex;gap:20px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+    .eyebrow{font-size:11px;font-weight:800;letter-spacing:.2em;color:#a3e5c6;text-transform:uppercase}.brand{font-size:clamp(35px,5vw,62px);font-weight:850;letter-spacing:-.055em;line-height:1.04;margin:10px 0 6px}
+    .sub{color:#a8b9bc;max-width:700px;line-height:1.55;margin:0}.progress{min-width:210px;padding:16px 18px;border:1px solid #2c4b4c;border-radius:18px;background:#132833}
+    .progress strong{font-size:24px}.progress small{display:block;color:#b7c9c9}.track{height:6px;background:#28444a;border-radius:100px;margin-top:10px;overflow:hidden}.bar{height:100%;width:0;background:linear-gradient(90deg,#77e8bb,#f3d58c);transition:width .3s}
+    .layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:22px;margin-top:30px}.panel{background:#10202bdf;border:1px solid #2b414b;border-radius:22px;box-shadow:0 10px 40px #0002;overflow:hidden}
+    .panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:21px 22px 15px}.panelhead h2{font-size:17px;margin:0}.minor{font-size:12px;color:#9fb2b9}
+    .search{margin:0 22px 16px;width:calc(100% - 44px);border:1px solid #34525a;border-radius:12px;background:#0a1720;color:#fff;padding:12px 14px}
+    .tiles{padding:4px 20px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;max-height:62vh;overflow:auto;align-content:start;min-height:280px}
+    .tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:86px;border:1px solid #39515a;border-radius:13px;background:linear-gradient(145deg,#213a43,#152832);color:#eaf6f1;text-align:left;padding:13px 12px;transition:transform .15s,border-color .15s,background .15s}
+    .tile:hover,.tile:focus-visible{transform:translateY(-2px);border-color:#a6eacb}.tile[aria-pressed="true"]{border-color:#f3d58c;background:#4b4835;box-shadow:0 0 0 1px #f3d58c inset}.tile .name{font-weight:700;font-size:15px}.tile .group{font-size:10px;letter-spacing:.04em;color:#9fb9bd}
+    .aside{display:flex;flex-direction:column;gap:18px}.arena{padding:22px}.arena h2,.journal h2{font-size:17px;margin:0 0 12px}.slots{display:flex;align-items:center;gap:8px}.slot{min-width:0;flex:1;min-height:58px;display:grid;place-items:center;text-align:center;padding:8px;border-radius:12px;border:1px dashed #48636a;color:#9bb0b4;font-size:13px;font-weight:700}.slot.filled{border-style:solid;background:#234044;color:#efffe7}.plus{font-size:19px;color:#f3d58c}
+    .notice{margin:16px 0 0;border-radius:13px;padding:14px;background:#1a333b;min-height:72px;color:#cce2db;line-height:1.45;font-size:13px}.notice.new{background:#34412e;border:1px solid #b5d788;color:#f5ffde}.notice.fail{background:#27313c;color:#bac9cf}
+    .journal{padding:22px}.journal ul{padding:0;margin:0;list-style:none;max-height:290px;overflow:auto}.journal li{border-top:1px solid #2c4149;padding:10px 0;font-size:12px;line-height:1.5;color:#b8cacb}.journal strong{color:#e9f4e7}.empty{font-size:13px;color:#829ca4}
+    .utility{border:1px solid #4b5f64;border-radius:11px;background:transparent;color:#d0dbde;padding:8px 12px;font-size:12px;font-weight:700}.utility:hover{background:#263b44}.foot{margin-top:22px;color:#8aa3a9;font-size:12px;line-height:1.55}
+    @media(max-width:820px){.layout{grid-template-columns:1fr}.aside{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.tiles{max-height:none;min-height:180px}}
+    @media(max-width:550px){.shell{padding:18px 12px 35px}.aside{display:flex}.panelhead{padding:18px 14px 12px}.search{margin:0 14px 12px;width:calc(100% - 28px)}.tiles{padding:2px 12px 20px;grid-template-columns:repeat(2,minmax(0,1fr))}.progress{width:100%}.tile{min-height:76px}}
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="top">
+      <div><span class="eyebrow">Experimental playtest · version 0.1</span><h1 class="brand">FIRST LIGHT<span style="color:#99e4bf">.</span></h1><p class="sub">A small world with fixed laws. Discover what happens when two known ideas meet. Tap two elements, or drag one onto another. Even the same element twice may react.</p></div>
+      <div class="progress" aria-live="polite"><small>Discoveries</small><strong id="count">—</strong><div class="track"><div class="bar" id="bar"></div></div></div>
+    </header>
+    <div class="layout">
+      <section class="panel" aria-label="Discovered elements"><div class="panelhead"><h2>Your elements</h2><span id="filtered" class="minor"></span></div><input id="search" class="search" type="search" placeholder="Search discovered elements…" aria-label="Search discovered elements"><div id="elements" class="tiles" aria-live="polite"></div></section>
+      <aside class="aside">
+        <section class="panel arena" aria-label="Combination workspace"><h2>Combination chamber</h2><div class="slots"><div id="slot-a" class="slot">Choose one</div><span class="plus">+</span><div id="slot-b" class="slot">Choose another</div></div><p class="notice" id="notice" role="status" aria-live="polite">Select two elements to test a law. Your collection saves automatically on this device.</p></section>
+        <section class="panel journal" aria-label="Discovery history"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2>Field journal</h2><button class="utility" id="reset" type="button">Reset save</button></div><ul id="journal"></ul></section>
+      </aside>
+    </div>
+    <p class="foot">Original, provisional game. Runs entirely in your browser, without account registration or AI calls. Saves are stored on this device for this version. Public playtest: share feedback with the creator.</p>
+  </main>
+  <script type="module" src="./app.mjs"></script>
+</body>
+</html>
