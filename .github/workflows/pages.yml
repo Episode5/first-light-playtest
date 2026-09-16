@@ -1,0 +1,81 @@
+name: Publish First Light playtest
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: first-light-public-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test standalone browser game and deterministic recipes
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --check app.mjs
+          node --check seed.mjs
+          node --check dist/core/resolveRecipe.js
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import {ELEMENTS, STARTER_IDS, RECIPES, validateSeed} from './seed.mjs';
+          import {resolveRecipe} from './dist/core/resolveRecipe.js';
+          const checked = validateSeed();
+          assert.equal(checked.elementCount, 58);
+          assert.equal(checked.starterCount, 6);
+          assert.equal(checked.reachableCount, 58);
+          const ownedElementIds = new Set(ELEMENTS.map(e => e.id));
+          for (const recipe of RECIPES) {
+            const state = {ownedElementIds};
+            assert.equal(resolveRecipe(recipe.inputAId, recipe.inputBId, RECIPES, state).recipe.resultId, recipe.resultId);
+            assert.equal(resolveRecipe(recipe.inputBId, recipe.inputAId, RECIPES, state).recipe.resultId, recipe.resultId);
+          }
+          assert.equal(resolveRecipe('stone','stone',RECIPES,{ownedElementIds}).recipe.resultId,'gravel');
+          assert.equal(resolveRecipe('water','water',RECIPES,{ownedElementIds}).type,'no-reaction');
+          console.log(`PASS: ${checked.elementCount} concepts, ${RECIPES.length} recipes, ${STARTER_IDS.length} starters, full reachability and reverse-pair symmetry`);
+          NODE
+      - name: Assemble explicit public-file allowlist
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p _site/dist/core
+          cp index.html _site/index.html
+          cp app.mjs _site/app.mjs
+          cp seed.mjs _site/seed.mjs
+          cp dist/core/resolveRecipe.js _site/dist/core/resolveRecipe.js
+          touch _site/.nojekyll
+          test "$(find _site -type f | wc -l | tr -d ' ')" = 5
+          if grep -rE 'OPENAI_API_KEY|ANTHROPIC_API_KEY|sk-proj-' _site; then
+            echo 'Found forbidden secret marker in public package'; exit 1
+          fi
+          echo 'Published allowlist:'
+          find _site -type f | sort
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy game-only artifact
+        id: deployment
+        uses: actions/deploy-pages@v4
