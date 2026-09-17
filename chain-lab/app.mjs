@@ -1,374 +1,421 @@
-// Public, isolated playtest. Uses only already-published First Light content and resolver.
-// No private research code, AI calls, remote telemetry, or changes to the original save.
+// Public progressive mechanic test. Uses only the published First Light graph and resolver.
+// No provider calls, telemetry, private research files, or hidden-recipe recommendations.
 import {ELEMENTS, GRAPH_VERSION, RECIPES, STARTER_IDS, validateSeed} from '../seed.mjs';
 import {resolveRecipe} from '../dist/core/resolveRecipe.js';
 
 const $ = id => document.getElementById(id);
 const concepts = new Map(ELEMENTS.map(item => [item.id, item]));
 const recipes = new Map(RECIPES.map(item => [item.id, item]));
-const mode = new URLSearchParams(location.search).get('mode') === 'baseline' ? 'baseline' : 'chains';
-const key = (a, b) => [a, b].sort().join('::');
+const pairKey = (a, b) => [a, b].sort().join('::');
 const concept = id => concepts.get(id);
-const label = id => concept(id)?.name ?? id;
-const description = recipe => `${label(recipe.inputAId)} + ${label(recipe.inputBId)} → ${label(recipe.resultId)}`;
-const make = (tag, content = '', className = '') => {
+const name = id => concept(id)?.name ?? id;
+const make = (tag, text = '', className = '') => {
   const el = document.createElement(tag);
-  el.textContent = content;
+  el.textContent = text;
   if (className) el.className = className;
   return el;
 };
 
-const GROUPS = Object.freeze({
-  primordial:{icon:'✦',name:'Primordial',description:'Starting forces and basic elements.'},
-  natural:{icon:'◌',name:'Nature',description:'Environmental forms and natural transformations.'},
-  material:{icon:'◆',name:'Materials',description:'Substances that can become parts, surfaces and objects.'},
-  life:{icon:'❧',name:'Life',description:'Living things, growth and organisms.'},
-  making:{icon:'⚒',name:'Making',description:'Tools, crafted parts and practical objects.'},
-  settlement:{icon:'⌂',name:'Civilization',description:'Homes, settlements and larger built communities.'},
-  knowledge:{icon:'◇',name:'Knowledge',description:'Learning, records, experiments and ideas.'},
-  technology:{icon:'⚙',name:'Technology',description:'Machines, electricity and connected systems.'},
-  culture:{icon:'♪',name:'Culture',description:'Sound, society, exchange and shared expression.'}
+const GROUP_META = Object.freeze({
+  primordial:{name:'Primordial',mark:'✦'}, natural:{name:'Nature',mark:'◌'}, material:{name:'Materials',mark:'◆'},
+  life:{name:'Life',mark:'❧'}, making:{name:'Making',mark:'⌁'}, settlement:{name:'Civilization',mark:'⌂'},
+  knowledge:{name:'Knowledge',mark:'◇'}, technology:{name:'Technology',mark:'⚙'}, culture:{name:'Culture',mark:'♪'}
 });
-const GROUP_ORDER = Object.keys(GROUPS);
-const totalByGroup = new Map(GROUP_ORDER.map(group => [group, ELEMENTS.filter(item => item.group === group).length]));
+const GROUP_ORDER = Object.keys(GROUP_META);
 
-function initialState() {
+function newState() {
   validateSeed();
-  const state = {version: GRAPH_VERSION, owned: new Set(STARTER_IDS), witnessed: new Set(),
-    chains: [], attempts: [], arrangement: 0};
-  // Replay the same actual starter recipes in both modes. Do not count tutorial steps.
-  for (const [a, b] of [['water', 'earth'], ['mud', 'fire'], ['earth', 'fire']]) {
-    const resolution = resolveRecipe(a, b, RECIPES, {ownedElementIds: state.owned});
-    if (resolution.type !== 'recipe') throw Error('Test fixture no longer resolves');
-    state.owned.add(resolution.recipe.resultId);
-    state.witnessed.add(resolution.recipe.id);
-  }
-  return state;
+  return {
+    version: GRAPH_VERSION,
+    owned: new Set(STARTER_IDS),
+    witnessed: new Set(),
+    chains: [],
+    attempts: [],
+    arrangement: 0
+  };
 }
 
-let state = initialState();
+let state = newState();
 let selectedA = null;
 let selectedB = null;
-let categoryFilter = 'all';
+let activeGroup = 'primordial';
 let lastDiscovery = null;
-let benchChainId = null;
+let branchChainId = null;
+let justRevealedGroup = null;
 
-$('baseline-link').setAttribute('aria-current', mode === 'baseline' ? 'page' : 'false');
-$('chains-link').setAttribute('aria-current', mode === 'chains' ? 'page' : 'false');
-$('workshop').hidden = mode !== 'chains';
-
-function announce(message) { $('status').textContent = message; }
 function check() {
-  if (state.version !== GRAPH_VERSION) throw Error('This graph version changed. Reset the test.');
+  if (state.version !== GRAPH_VERSION) throw Error('World version changed. Reset this test.');
 }
-function showDiscovery(id) {
-  lastDiscovery = id;
-  const item = concept(id);
-  $('discovery-text').textContent = `NEW · ${item.name} joined ${item.groupName}.`;
-  $('discovery').classList.add('show');
+function discoveredGroups() {
+  return GROUP_ORDER.filter(group => ELEMENTS.some(item => item.group === group && state.owned.has(item.id)));
+}
+function phaseName() {
+  const groups = new Set(discoveredGroups());
+  if (groups.has('technology') || groups.has('culture')) return 'Systems';
+  if (groups.has('knowledge') || groups.has('settlement')) return 'Civilization';
+  if (groups.has('making')) return 'Making';
+  if (groups.has('life')) return 'Living';
+  if (groups.has('material')) return 'Matter';
+  if (groups.has('natural')) return 'Formation';
+  return 'Origins';
+}
+function announce(message) { $('status').textContent = message; }
+function witnessedRecipes() {
+  return RECIPES.filter(recipe => recipe.status === 'active' && state.witnessed.has(recipe.id) &&
+    [recipe.inputAId, recipe.inputBId, recipe.resultId].every(id => state.owned.has(id)));
+}
+function availablePaths() {
+  const known = witnessedRecipes();
+  const paths = [];
+  for (const first of known) {
+    for (const second of known) {
+      if (first.id === second.id) continue;
+      if (![second.inputAId, second.inputBId].includes(first.resultId)) continue;
+      const id = `${first.id}:${second.id}`;
+      if (state.chains.some(chain => chain.id === id)) continue;
+      paths.push({id, first, second});
+    }
+  }
+  return paths;
+}
+function recipeText(recipe) {
+  return `${name(recipe.inputAId)} + ${name(recipe.inputBId)} → ${name(recipe.resultId)}`;
+}
+
+function revealDiscovery(resultId, oldGroups) {
+  lastDiscovery = resultId;
+  const item = concept(resultId);
+  const newGroups = discoveredGroups().filter(group => !oldGroups.includes(group));
+  justRevealedGroup = newGroups[0] ?? null;
+  $('discovery-name').textContent = item.name;
+  $('discovery-meta').textContent = justRevealedGroup
+    ? `${GROUP_META[item.group].mark} ${item.groupName} has opened.`
+    : `${item.groupName} · added to your world`;
+  $('discovery').hidden = false;
+  if (justRevealedGroup) activeGroup = justRevealedGroup;
 }
 function hideDiscovery() {
   lastDiscovery = null;
-  $('discovery').classList.remove('show');
+  justRevealedGroup = null;
+  $('discovery').hidden = true;
 }
 function experiment(a, b, origin = 'free') {
   check();
-  if (!state.owned.has(a) || !state.owned.has(b)) throw Error('Choose two owned concepts.');
-  const result = resolveRecipe(a, b, RECIPES, {ownedElementIds: state.owned});
-  const found = result.type === 'recipe' ? result.recipe : null;
-  const novel = !!found && !state.owned.has(found.resultId);
-  if (found) {
-    state.owned.add(found.resultId);
-    state.witnessed.add(found.id);
+  if (!state.owned.has(a) || !state.owned.has(b)) throw Error('Both concepts must already be in your world.');
+  const oldGroups = discoveredGroups();
+  const resolved = resolveRecipe(a, b, RECIPES, {ownedElementIds: state.owned});
+  const recipe = resolved.type === 'recipe' ? resolved.recipe : null;
+  const resultId = recipe?.resultId ?? null;
+  const novel = !!resultId && !state.owned.has(resultId);
+  if (recipe) {
+    state.witnessed.add(recipe.id);
+    state.owned.add(recipe.resultId);
   }
-  state.attempts.push({a, b, pair: key(a, b), origin, resultId: found?.resultId ?? null, novel});
-  if (found) {
-    announce(`${label(a)} + ${label(b)} → ${label(found.resultId)}${novel ? ' · New concept added to your world.' : ' · You already knew this result.'}`);
-    if (novel) showDiscovery(found.resultId);
+  state.attempts.push({a, b, pair:pairKey(a,b), origin, resultId, novel});
+  if (!recipe) {
+    announce('No reaction. Try another relationship.');
+  } else if (novel) {
+    announce(`${name(a)} + ${name(b)} became ${name(resultId)}.`);
+    revealDiscovery(resultId, oldGroups);
   } else {
-    announce(`${label(a)} + ${label(b)}: no reaction in this build. Try another direction; this screen does not mark “promising” failures.`);
+    announce(`${name(a)} + ${name(b)} returns ${name(resultId)}.`);
   }
-  return found;
+  return recipe;
 }
+
 function choose(id) {
   if (!state.owned.has(id)) return;
   if (selectedA === null) {
     selectedA = id;
     selectedB = null;
-    benchChainId = null;
-    announce(`${label(id)} is in Concept A. Pick any owned partner for Concept B.`);
+    if (!branchChainId) announce(`${name(id)} selected. Choose what to meet it with.`);
   } else if (selectedB === null) {
     selectedB = id;
-    announce(`${label(selectedA)} + ${label(selectedB)} is ready. Press Combine when you want to test it.`);
+    announce(`${name(selectedA)} + ${name(selectedB)}. Ready.`);
   } else {
     selectedB = id;
-    announce(`Concept B changed to ${label(id)}. Press Combine to test ${label(selectedA)} + ${label(selectedB)}.`);
+    announce(`${name(selectedA)} + ${name(selectedB)}. Ready.`);
   }
   render();
 }
-function clearSelection(message = 'Experiment slots cleared. Choose any concept to start again.') {
-  selectedA = null; selectedB = null; benchChainId = null;
-  announce(message); render();
+function clearSelection(message = 'Choose two concepts.') {
+  selectedA = null;
+  selectedB = null;
+  if (!branchChainId) announce(message);
+  render();
 }
 function combineSelected() {
   if (selectedA === null || selectedB === null) return;
   try {
-    if (benchChainId) {
-      const chain = state.chains.find(item => item.id === benchChainId);
-      if (!chain || chain.phase !== 'diverted' || chain.intermediate !== selectedA)
-        throw Error('That branch is no longer active. Start a new experiment.');
-      chainAction(chain.id, 'bench', selectedB);
+    if (branchChainId) {
+      const chain = state.chains.find(item => item.id === branchChainId);
+      if (!chain || chain.phase !== 'branch' || chain.intermediate !== selectedA) throw Error('That branch is no longer active.');
+      experiment(selectedA, selectedB, 'branch');
     } else {
       experiment(selectedA, selectedB, 'free');
     }
-    // Keep A loaded so exploration becomes “try another partner” rather than repeated setup.
     selectedB = null;
-  } catch (error) { announce(`Experiment unavailable: ${error.message}`); }
+  } catch (error) {
+    announce(error.message);
+  }
   render();
 }
-function witnessedRecipes() {
-  return RECIPES.filter(recipe => recipe.status === 'active' && state.witnessed.has(recipe.id) &&
-    [recipe.inputAId, recipe.inputBId, recipe.resultId].every(id => state.owned.has(id)));
-}
-function knownContinuations(recipe, known = witnessedRecipes()) {
-  return known.filter(next => next.id !== recipe.id &&
-    (next.inputAId === recipe.resultId || next.inputBId === recipe.resultId));
-}
-function availablePaths() {
-  const known = witnessedRecipes();
-  const paths = [];
-  for (const first of known) for (const second of knownContinuations(first, known)) {
-    const id = `${first.id}:${second.id}`;
-    if (!state.chains.some(chain => chain.id === id)) paths.push({id, first, second});
-  }
-  return paths;
-}
-function install(firstId, secondId) {
-  check();
-  if (mode !== 'chains') throw Error('Structures are disabled in Explore-only mode.');
+
+function installPath(firstId, secondId) {
   const first = recipes.get(firstId);
   const second = recipes.get(secondId);
   if (!first || !second || !state.witnessed.has(first.id) || !state.witnessed.has(second.id) ||
-      first.id === second.id || ![second.inputAId, second.inputBId].includes(first.resultId))
-    throw Error('A structure can use only witnessed relationships sharing an exact junction.');
-  if (![first.inputAId, first.inputBId, first.resultId, second.inputAId, second.inputBId, second.resultId]
-      .every(id => state.owned.has(id))) throw Error('Structure contains an unowned concept.');
-  if (state.chains.length >= 3) throw Error('This mechanic test is limited to three structures.');
+      first.id === second.id || ![second.inputAId, second.inputBId].includes(first.resultId)) {
+    throw Error('That connection is no longer available.');
+  }
   const id = `${first.id}:${second.id}`;
-  if (state.chains.some(chain => chain.id === id)) throw Error('This path is already built.');
-  state.chains.push({id, firstId:first.id, secondId:second.id, intermediate:first.resultId,
-    version:GRAPH_VERSION, phase:'ready'});
+  if (state.chains.some(chain => chain.id === id)) throw Error('Already built.');
+  state.chains.push({id, firstId:first.id, secondId:second.id, intermediate:first.resultId, phase:'ready', version:GRAPH_VERSION});
   state.arrangement++;
-  announce(`Built a known path through ${label(first.resultId)}. Nothing ran automatically. Run the first step when you are ready.`);
+  announce(`${name(first.resultId)} is now a junction you can operate.`);
+  render();
+  setTimeout(() => $('structures').scrollIntoView({behavior:'smooth',block:'start'}), 0);
 }
-function chainAction(chainId, action, partner = null) {
-  check();
+function chainAction(chainId, action) {
   const chain = state.chains.find(item => item.id === chainId);
-  if (!chain || chain.version !== GRAPH_VERSION || mode !== 'chains') throw Error('Invalid structure or mode.');
+  if (!chain || chain.version !== GRAPH_VERSION) throw Error('Structure is stale.');
   const first = recipes.get(chain.firstId);
   const second = recipes.get(chain.secondId);
-  if (!first || !second || !state.witnessed.has(first.id) || !state.witnessed.has(second.id) ||
-      ![second.inputAId, second.inputBId].includes(first.resultId)) throw Error('This structure no longer matches the known graph.');
-  if (action === 'first') {
-    if (!['ready', 'completed'].includes(chain.phase)) throw Error('Finish or reset the junction first.');
-    const result = experiment(first.inputAId, first.inputBId, 'stage-one');
-    if (result?.id !== first.id || result.resultId !== chain.intermediate) throw Error('The graph changed.');
-    chain.phase = 'intermediate';
-    benchChainId = null;
-    selectedA = null; selectedB = null;
-    announce(`${label(chain.intermediate)} is now sitting at the junction. Continue the known path—or branch from it.`);
-  } else if (action === 'second') {
-    if (chain.phase !== 'intermediate') throw Error('Run the first step before continuing.');
-    const result = experiment(second.inputAId, second.inputBId, 'stage-two');
-    if (result?.id !== second.id) throw Error('The graph changed.');
-    chain.phase = 'completed';
-    benchChainId = null;
-    announce(`Known path completed at ${label(second.resultId)}. You can stage the junction again if you want to explore from it.`);
-  } else if (action === 'divert') {
-    if (chain.phase !== 'intermediate') throw Error('Reach the junction before branching.');
-    chain.phase = 'diverted'; state.arrangement++;
-    selectedA = chain.intermediate; selectedB = null; benchChainId = chain.id;
-    announce(`Branch mode: ${label(chain.intermediate)} is loaded as Concept A. Pick ANY owned concept from the category shelves as Concept B, then press Combine.`);
-  } else if (action === 'bench') {
-    if (chain.phase !== 'diverted' || chain.intermediate !== selectedA || !state.owned.has(partner))
-      throw Error('Branch from the junction first, then choose an owned partner.');
-    experiment(chain.intermediate, partner, 'side-bench');
-  } else if (action === 'restore') {
-    if (chain.phase === 'ready') throw Error('Structure is already ready.');
-    chain.phase = 'ready'; state.arrangement++;
-    if (benchChainId === chain.id) { benchChainId = null; selectedA = null; selectedB = null; }
-    announce('Structure reset to its first step. No concepts were consumed.');
-  } else throw Error('Unknown structure action.');
-}
-function actionButton(text, disabled, action, className = '') {
-  const btn = make('button', text, className);
-  btn.type = 'button'; btn.disabled = disabled;
-  btn.addEventListener('click', () => {
-    try { action(); } catch (error) { announce(`Action unavailable: ${error.message}`); }
-    render();
-  });
-  return btn;
+  if (!first || !second) throw Error('Structure is invalid.');
+
+  if (action === 'stage') {
+    if (!['ready','complete'].includes(chain.phase)) throw Error('Resolve the current junction first.');
+    const found = experiment(first.inputAId, first.inputBId, 'stage');
+    if (found?.id !== first.id) throw Error('World law changed.');
+    chain.phase = 'junction';
+    branchChainId = null;
+    selectedA = null;
+    selectedB = null;
+    announce(`${name(chain.intermediate)} is at the junction.`);
+  } else if (action === 'continue') {
+    if (chain.phase !== 'junction') throw Error('Stage the junction first.');
+    const found = experiment(second.inputAId, second.inputBId, 'continue');
+    if (found?.id !== second.id) throw Error('World law changed.');
+    chain.phase = 'complete';
+    announce(`The known path resolves to ${name(second.resultId)}.`);
+  } else if (action === 'branch') {
+    if (chain.phase !== 'junction') throw Error('Stage the junction first.');
+    chain.phase = 'branch';
+    state.arrangement++;
+    branchChainId = chain.id;
+    selectedA = chain.intermediate;
+    selectedB = null;
+    activeGroup = discoveredGroups()[0] ?? 'primordial';
+    announce(`${name(chain.intermediate)} is held open. Choose any partner.`);
+    setTimeout(() => $('world').scrollIntoView({behavior:'smooth',block:'start'}), 0);
+  } else if (action === 'reset') {
+    chain.phase = 'ready';
+    state.arrangement++;
+    if (branchChainId === chain.id) {
+      branchChainId = null;
+      selectedA = null;
+      selectedB = null;
+    }
+    announce('Junction reset.');
+  }
+  render();
 }
 
-function renderChips() {
-  const root = $('category-chips'); root.replaceChildren();
-  const all = actionButton(`All · ${state.owned.size}`, false, () => {categoryFilter='all'; render();}, 'chip');
-  all.setAttribute('aria-pressed', String(categoryFilter === 'all')); root.append(all);
-  for (const group of GROUP_ORDER) {
-    const owned = ELEMENTS.filter(item => item.group === group && state.owned.has(item.id)).length;
-    const meta = GROUPS[group];
-    const chip = actionButton(`${meta.icon} ${meta.name} ${owned}/${totalByGroup.get(group)}`, false,
-      () => {categoryFilter=group; render();}, 'chip');
-    chip.setAttribute('aria-pressed', String(categoryFilter === group)); root.append(chip);
-  }
+function button(text, action, className = '') {
+  const el = make('button', text, className);
+  el.type = 'button';
+  el.addEventListener('click', () => {
+    try { action(); } catch (error) { announce(error.message); render(); }
+  });
+  return el;
 }
-function conceptButton(item) {
-  const button = make('button', '', 'concept');
-  button.type = 'button'; button.setAttribute('aria-pressed', String(selectedA === item.id || selectedB === item.id));
-  const name = make('span', item.name, 'concept-name');
-  const meta = make('span', `${item.groupName}${selectedA === item.id ? ' · Concept A' : selectedB === item.id ? ' · Concept B' : ''}`, 'concept-meta');
-  button.append(name, meta); button.addEventListener('click', () => choose(item.id));
-  return button;
+
+function renderHeader() {
+  $('phase').textContent = phaseName();
+  $('progress-count').textContent = `${state.owned.size} / ${ELEMENTS.length}`;
+  $('progress-fill').style.width = `${(state.owned.size / ELEMENTS.length) * 100}%`;
+}
+function renderMixer() {
+  $('slot-a').querySelector('strong').textContent = selectedA ? name(selectedA) : 'Choose';
+  $('slot-b').querySelector('strong').textContent = selectedB ? name(selectedB) : 'Choose';
+  $('combine').disabled = selectedA === null || selectedB === null;
+  const chain = branchChainId ? state.chains.find(item => item.id === branchChainId) : null;
+  $('branchbar').hidden = !chain;
+  if (chain) $('branch-label').textContent = `Branching from ${name(chain.intermediate)}`;
+}
+function renderTabs() {
+  const groups = discoveredGroups();
+  if (!groups.includes(activeGroup)) activeGroup = groups[0] ?? 'primordial';
+  const root = $('tabs');
+  root.replaceChildren();
+  root.hidden = groups.length <= 1;
+  for (const group of groups) {
+    const meta = GROUP_META[group];
+    const count = ELEMENTS.filter(item => item.group === group && state.owned.has(item.id)).length;
+    const tab = button(`${meta.mark} ${meta.name} ${count}`, () => { activeGroup = group; renderWorld(); }, 'tab');
+    tab.setAttribute('aria-pressed', String(group === activeGroup));
+    root.append(tab);
+  }
 }
 function renderWorld() {
-  renderChips();
-  const term = $('search').value.trim().toLocaleLowerCase();
-  const owned = ELEMENTS.filter(item => state.owned.has(item.id) && item.name.toLocaleLowerCase().includes(term) &&
-    (categoryFilter === 'all' || item.group === categoryFilter));
-  const categoryCount = new Set(ELEMENTS.filter(item => state.owned.has(item.id)).map(item => item.group)).size;
-  $('visible-count').textContent = `${state.owned.size} owned across ${categoryCount} categories · ${ELEMENTS.length} concepts exist in this test world.`;
-  const shelves = $('shelves'); shelves.replaceChildren();
-  const groups = categoryFilter === 'all' ? GROUP_ORDER.filter(group => owned.some(item => item.group === group)) : [categoryFilter];
-  for (const group of groups) {
-    const meta = GROUPS[group];
-    const items = owned.filter(item => item.group === group).sort((a,b) => a.name.localeCompare(b.name));
-    const section = make('section', '', 'shelf');
-    const head = make('div', '', 'shelf-head');
-    const left = make('div', '', '');
-    const title = make('h3', '', 'shelf-title');
-    title.append(make('span', meta.icon, 'shelf-icon'), document.createTextNode(meta.name));
-    left.append(title, make('p', meta.description, 'small'));
-    const ownedCount = ELEMENTS.filter(item => item.group === group && state.owned.has(item.id)).length;
-    head.append(left, make('span', `${ownedCount}/${totalByGroup.get(group)} found`, 'shelf-count'));
-    section.append(head);
-    if (items.length) {
-      const grid = make('div', '', 'concept-grid'); items.forEach(item => grid.append(conceptButton(item))); section.append(grid);
-    } else {
-      section.append(make('div', term ? 'No owned concepts in this category match your search.' : `Nothing discovered in ${meta.name} yet.`, 'empty'));
-    }
-    shelves.append(section);
-  }
-  if (!groups.length) shelves.append(make('div', 'No owned concept matches that search.', 'empty'));
-}
-function renderKnown() {
-  const root = $('known'); root.replaceChildren();
-  const known = witnessedRecipes();
-  for (const recipe of known) {
-    const card = make('article', '', 'recipe-card');
-    const flow = make('div', '', 'recipe-flow');
-    flow.append(document.createTextNode(`${label(recipe.inputAId)} + ${label(recipe.inputBId)} → `),
-      make('span', label(recipe.resultId), 'recipe-result'));
-    card.append(flow, make('span', concept(recipe.resultId)?.groupName ?? '', 'tag'));
-    const continuations = knownContinuations(recipe, known);
-    if (continuations.length) card.append(make('p', `${label(recipe.resultId)} already connects onward through ${continuations.length} known relationship${continuations.length === 1 ? '' : 's'}.`, 'small'));
+  const groups = discoveredGroups();
+  renderTabs();
+  const ownedCount = state.owned.size;
+  $('search').hidden = ownedCount < 14;
+  const term = $('search').hidden ? '' : $('search').value.trim().toLowerCase();
+  const meta = GROUP_META[activeGroup];
+  $('world-subtitle').textContent = meta?.name ?? 'World';
+  const items = ELEMENTS.filter(item => item.group === activeGroup && state.owned.has(item.id) && item.name.toLowerCase().includes(term))
+    .sort((a,b) => a.name.localeCompare(b.name));
+  const root = $('concept-grid');
+  root.replaceChildren();
+  for (const item of items) {
+    const card = button('', () => choose(item.id), 'concept');
+    card.setAttribute('aria-pressed', String(item.id === selectedA || item.id === selectedB));
+    card.append(make('b', item.name));
+    if (item.id === selectedA) card.append(make('small','Concept A'));
+    else if (item.id === selectedB) card.append(make('small','Concept B'));
     root.append(card);
   }
-  if (!known.length) root.append(make('div', 'No witnessed relationships yet. Explore two concepts to begin.', 'empty'));
+  if (!items.length) root.append(make('div','No match in this category.','empty'));
 }
-function pathVisual(first, second) {
-  const wrap = make('div', '', 'chain-visual');
-  wrap.append(make('div', description(first), 'recipe-flow'), make('div', '↓', 'arrow-down'));
-  const junctionLine = make('div', '', ''); junctionLine.append(make('span', `Junction · ${label(first.resultId)}`, 'junction')); wrap.append(junctionLine);
-  wrap.append(make('div', '↓', 'arrow-down'), make('div', description(second), 'recipe-flow'));
-  return wrap;
+function renderMemory() {
+  const known = witnessedRecipes();
+  $('memory').hidden = known.length === 0;
+  if (!known.length) return;
+  $('memory-count').textContent = `${known.length}`;
+  const root = $('memory-list');
+  root.replaceChildren();
+  const visible = known.slice(-5).reverse();
+  for (const recipe of visible) {
+    const row = make('div','', 'memory-row');
+    row.append(make('span',`${name(recipe.inputAId)} + ${name(recipe.inputBId)}`), make('span','→','arrow'), make('span',name(recipe.resultId),'result'));
+    root.append(row);
+  }
+  const extra = known.length - visible.length;
+  $('memory-more').textContent = extra > 0 ? `+ ${extra} earlier relationship${extra === 1 ? '' : 's'}` : '';
 }
-function renderWorkshop() {
-  if (mode !== 'chains') return;
-  const options = $('path-options'); options.replaceChildren();
+function renderPattern() {
   const paths = availablePaths();
-  for (const path of paths) {
-    const card = make('article', '', 'path-card');
-    card.append(make('h3', 'A known path is available'), pathVisual(path.first, path.second),
-      make('p', `Both relationships are already yours. Building this path adds no new recipe; it makes ${label(path.first.resultId)} an explicit decision point.`, 'small'),
-      actionButton('Build this structure', false, () => install(path.first.id, path.second.id), 'primary'));
-    options.append(card);
-  }
-  if (!paths.length) {
-    const known = witnessedRecipes();
-    options.append(make('div', known.length < 2 ?
-      'Keep exploring. Once you know more relationships, connected paths can appear here.' :
-      'No unbuilt connected path is available from your witnessed relationships right now. Keep exploring; new discoveries may create a connection.', 'empty'));
-  }
-  renderChains();
+  $('pattern').hidden = paths.length === 0;
+  if (!paths.length) return;
+  const {first,second} = paths[0];
+  const card = make('div','', 'pattern');
+  card.append(make('div','connection discovered','pattern-eyebrow'));
+  const path = make('div','', 'path');
+  path.append(document.createTextNode(`${name(first.inputAId)} + ${name(first.inputBId)} → `), make('span',name(first.resultId),'junction'), document.createTextNode(` → + ${second.inputAId === first.resultId ? name(second.inputBId) : name(second.inputAId)} → ${name(second.resultId)}`));
+  card.append(path, make('div',`${name(first.resultId)} now sits between two relationships you already know.`,'subtle'));
+  card.append(button(`Make ${name(first.resultId)} a junction`, () => installPath(first.id,second.id), 'primary'));
+  $('pattern-card').replaceChildren(card);
 }
-function renderChains() {
-  if (mode !== 'chains') return;
-  const root = $('chains'); root.replaceChildren();
+function renderStructures() {
+  $('structures').hidden = state.chains.length === 0;
+  if (!state.chains.length) return;
+  const root = $('structure-list');
+  root.replaceChildren();
   for (const chain of state.chains) {
     const first = recipes.get(chain.firstId);
     const second = recipes.get(chain.secondId);
-    const card = make('article', '', 'chain');
-    card.append(make('h3', `Structure · ${label(chain.intermediate)} junction`), pathVisual(first, second));
-    const choice = make('div', '', 'chain-choice');
-    const buttons = make('div', '', 'buttons');
+    const card = make('article','', 'structure');
+    card.append(make('div',`${name(chain.intermediate)} junction`,'structure-title'),
+      make('div',`${recipeText(first)}  ·  ${recipeText(second)}`,'structure-flow'));
+    const choice = make('div','', 'choice');
+    const actions = make('div','', 'choice-actions');
     if (chain.phase === 'ready') {
-      choice.append(make('strong', 'Ready to stage the junction.'), make('p', `Run the first known step. ${label(chain.intermediate)} will become the decision point.`, 'small'));
-      buttons.append(actionButton(`Run first step → ${label(chain.intermediate)}`, false, () => chainAction(chain.id, 'first'), 'primary'));
-    } else if (chain.phase === 'intermediate') {
-      choice.append(make('strong', `${label(chain.intermediate)} is at the junction.`), make('p', 'This is the mechanic: continue what you already know, or use the junction as a reason to explore somewhere else.', 'small'));
-      buttons.append(
-        actionButton(`Continue known path → ${label(second.resultId)}`, false, () => chainAction(chain.id, 'second'), 'secondary'),
-        actionButton(`Branch and experiment with ${label(chain.intermediate)}`, false, () => {
-          chainAction(chain.id, 'divert');
-          setTimeout(() => $('shelves').scrollIntoView({behavior:'smooth',block:'start'}), 0);
-        }, 'primary'));
-    } else if (chain.phase === 'diverted') {
-      choice.append(make('strong', `Branch mode · ${label(chain.intermediate)} is loaded in Concept A.`), make('p', 'Choose ANY owned concept from the category shelves as Concept B. No hidden recipe ranking is guiding you.', 'small'));
-      buttons.append(
-        actionButton('Go to category shelves', false, () => $('shelves').scrollIntoView({behavior:'smooth',block:'start'}), 'primary'),
-        actionButton('Return to known path', false, () => chainAction(chain.id, 'restore'), 'secondary'));
+      choice.append(make('strong','Dormant'), make('p',`Stage ${name(chain.intermediate)} to open the junction.`));
+      actions.classList.add('one');
+      actions.append(button(`Stage ${name(chain.intermediate)}`, () => chainAction(chain.id,'stage'), 'emphasis'));
+    } else if (chain.phase === 'junction') {
+      choice.append(make('strong',`${name(chain.intermediate)} is open`), make('p','Follow what you know, or turn the junction outward.'));
+      actions.append(button(`Continue → ${name(second.resultId)}`, () => chainAction(chain.id,'continue')),
+        button('Branch', () => chainAction(chain.id,'branch'), 'emphasis'));
+    } else if (chain.phase === 'branch') {
+      choice.append(make('strong',`Branching from ${name(chain.intermediate)}`), make('p','The junction is loaded as Concept A. Pick any discovered partner above.'));
+      actions.classList.add('one');
+      actions.append(button('Close branch', () => chainAction(chain.id,'reset')));
     } else {
-      choice.append(make('strong', `Known path completed at ${label(second.resultId)}.`), make('p', 'The path itself was not a discovery. If the junction made you want to try something else, that is the behavior this prototype is testing.', 'small'));
-      buttons.append(
-        actionButton(`Stage ${label(chain.intermediate)} again`, false, () => chainAction(chain.id, 'first'), 'primary'),
-        actionButton('Reset structure', false, () => chainAction(chain.id, 'restore'), 'secondary'));
+      choice.append(make('strong',`Resolved → ${name(second.resultId)}`), make('p','The known path is complete. Reopen it when you want another decision point.'));
+      actions.classList.add('one');
+      actions.append(button(`Reopen ${name(chain.intermediate)}`, () => chainAction(chain.id,'stage'), 'emphasis'));
     }
-    choice.append(buttons); card.append(choice); root.append(card);
+    choice.append(actions);
+    card.append(choice);
+    root.append(card);
   }
 }
 function renderRecord() {
   const distinct = new Set(state.attempts.map(item => item.pair)).size;
   const novel = state.attempts.filter(item => item.novel).length;
-  const bench = state.attempts.filter(item => item.origin === 'side-bench').length;
-  $('metrics').textContent = `${state.attempts.length} attempts · ${distinct} distinct pairs · ${novel} discoveries · ${bench} branch experiments · ${state.arrangement} structure actions`;
-  const history = $('history'); history.replaceChildren();
-  for (const item of state.attempts.slice(-12).reverse()) {
-    history.append(make('li', `${label(item.a)} + ${label(item.b)} → ${item.resultId ? label(item.resultId) + (item.novel ? ' (NEW)' : '') : 'no reaction'} · ${item.origin}`));
+  const branches = state.attempts.filter(item => item.origin === 'branch').length;
+  $('metrics').textContent = `${state.attempts.length} attempts · ${distinct} pairs · ${novel} discoveries · ${branches} branch experiments`;
+  const root = $('history');
+  root.replaceChildren();
+  for (const item of state.attempts.slice(-10).reverse()) {
+    root.append(make('li',`${name(item.a)} + ${name(item.b)} → ${item.resultId ? name(item.resultId) : 'no reaction'}`));
   }
-  if (!state.attempts.length) history.append(make('li', 'No player experiments yet. Starter fixture excluded.'));
 }
 function render() {
-  $('slot-a').textContent = selectedA === null ? 'Choose a concept' : label(selectedA);
-  $('slot-b').textContent = selectedB === null ? 'Choose another' : label(selectedB);
-  $('combine').disabled = selectedA === null || selectedB === null;
-  renderWorld(); renderKnown(); renderWorkshop(); renderRecord();
+  renderHeader();
+  renderMixer();
+  renderWorld();
+  renderMemory();
+  renderPattern();
+  renderStructures();
+  renderRecord();
 }
 
-$('search').addEventListener('input', render);
+$('slot-a').addEventListener('click', () => {
+  selectedA = null;
+  if (branchChainId) {
+    const chain = state.chains.find(item => item.id === branchChainId);
+    if (chain) { chain.phase = 'ready'; branchChainId = null; }
+  }
+  announce('Choose Concept A.');
+  render();
+});
+$('slot-b').addEventListener('click', () => { selectedB = null; announce('Choose Concept B.'); render(); });
 $('combine').addEventListener('click', combineSelected);
-$('clear').addEventListener('click', () => clearSelection());
+$('clear').addEventListener('click', () => {
+  if (branchChainId) {
+    const chain = state.chains.find(item => item.id === branchChainId);
+    if (chain) chain.phase = 'ready';
+    branchChainId = null;
+  }
+  clearSelection();
+});
+$('return-path').addEventListener('click', () => {
+  if (!branchChainId) return;
+  const chain = state.chains.find(item => item.id === branchChainId);
+  if (chain) chain.phase = 'junction';
+  branchChainId = null;
+  selectedA = null;
+  selectedB = null;
+  announce('Back at the junction.');
+  render();
+  setTimeout(() => $('structures').scrollIntoView({behavior:'smooth',block:'start'}),0);
+});
 $('use-discovery').addEventListener('click', () => {
   if (!lastDiscovery || !state.owned.has(lastDiscovery)) return;
-  selectedA = lastDiscovery; selectedB = null; benchChainId = null;
-  categoryFilter = concept(lastDiscovery).group;
-  announce(`${label(lastDiscovery)} is now Concept A. Pick a partner and see where it leads.`);
-  hideDiscovery(); render();
-  setTimeout(() => $('shelves').scrollIntoView({behavior:'smooth',block:'start'}), 0);
+  selectedA = lastDiscovery;
+  selectedB = null;
+  activeGroup = concept(lastDiscovery).group;
+  announce(`${name(lastDiscovery)} is Concept A. What should it meet?`);
+  hideDiscovery();
+  render();
 });
+$('search').addEventListener('input', renderWorld);
 $('reset').addEventListener('click', () => {
-  if (!confirm('Reset this separate chain-lab session? Your original First Light save is untouched.')) return;
-  state = initialState(); selectedA = null; selectedB = null; benchChainId = null; categoryFilter = 'all';
-  $('search').value = ''; hideDiscovery();
-  announce('Reset. Start in the category shelves: choose two concepts and press Combine.'); render();
+  if (!confirm('Reset this experimental world? Your original First Light save is untouched.')) return;
+  state = newState();
+  selectedA = null;
+  selectedB = null;
+  activeGroup = 'primordial';
+  lastDiscovery = null;
+  branchChainId = null;
+  $('search').value = '';
+  hideDiscovery();
+  announce('Tap two concepts below.');
+  render();
 });
+
 render();
