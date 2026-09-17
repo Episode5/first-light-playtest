@@ -1,48 +1,27 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#09131d">
-  <meta name="description" content="First Light: a free experimental element-combination discovery game.">
-  <title>First Light — Playtest</title>
-  <style>
-    :root {font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#ebf2ee;background:#09131d;font-synthesis:none}
-    *{box-sizing:border-box} body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 15% 0%,#204b48 0%,transparent 37%),radial-gradient(ellipse at 95% 8%,#242a50 0%,transparent 34%),#09131d}
-    button,input{font:inherit}button{cursor:pointer}button:focus-visible,input:focus-visible{outline:3px solid #f5d58f;outline-offset:3px}
-    .shell{max-width:1250px;padding:28px 22px 50px;margin:auto}.top{display:flex;gap:20px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
-    .eyebrow{font-size:11px;font-weight:800;letter-spacing:.2em;color:#a3e5c6;text-transform:uppercase}.brand{font-size:clamp(35px,5vw,62px);font-weight:850;letter-spacing:-.055em;line-height:1.04;margin:10px 0 6px}
-    .sub{color:#a8b9bc;max-width:700px;line-height:1.55;margin:0}.progress{min-width:210px;padding:16px 18px;border:1px solid #2c4b4c;border-radius:18px;background:#132833}
-    .progress strong{font-size:24px}.progress small{display:block;color:#b7c9c9}.track{height:6px;background:#28444a;border-radius:100px;margin-top:10px;overflow:hidden}.bar{height:100%;width:0;background:linear-gradient(90deg,#77e8bb,#f3d58c);transition:width .3s}
-    .layout{display:grid;grid-template-columns:minmax(0,1fr) 310px;gap:22px;margin-top:30px}.panel{background:#10202bdf;border:1px solid #2b414b;border-radius:22px;box-shadow:0 10px 40px #0002;overflow:hidden}
-    .panelhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:21px 22px 15px}.panelhead h2{font-size:17px;margin:0}.minor{font-size:12px;color:#9fb2b9}
-    .search{margin:0 22px 16px;width:calc(100% - 44px);border:1px solid #34525a;border-radius:12px;background:#0a1720;color:#fff;padding:12px 14px}
-    .tiles{padding:4px 20px 24px;display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;max-height:62vh;overflow:auto;align-content:start;min-height:280px}
-    .tile{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:8px;min-height:86px;border:1px solid #39515a;border-radius:13px;background:linear-gradient(145deg,#213a43,#152832);color:#eaf6f1;text-align:left;padding:13px 12px;transition:transform .15s,border-color .15s,background .15s}
-    .tile:hover,.tile:focus-visible{transform:translateY(-2px);border-color:#a6eacb}.tile[aria-pressed="true"]{border-color:#f3d58c;background:#4b4835;box-shadow:0 0 0 1px #f3d58c inset}.tile .name{font-weight:700;font-size:15px}.tile .group{font-size:10px;letter-spacing:.04em;color:#9fb9bd}
-    .aside{display:flex;flex-direction:column;gap:18px}.arena{padding:22px}.arena h2,.journal h2{font-size:17px;margin:0 0 12px}.slots{display:flex;align-items:center;gap:8px}.slot{min-width:0;flex:1;min-height:58px;display:grid;place-items:center;text-align:center;padding:8px;border-radius:12px;border:1px dashed #48636a;color:#9bb0b4;font-size:13px;font-weight:700}.slot.filled{border-style:solid;background:#234044;color:#efffe7}.plus{font-size:19px;color:#f3d58c}
-    .notice{margin:16px 0 0;border-radius:13px;padding:14px;background:#1a333b;min-height:72px;color:#cce2db;line-height:1.45;font-size:13px}.notice.new{background:#34412e;border:1px solid #b5d788;color:#f5ffde}.notice.fail{background:#27313c;color:#bac9cf}
-    .journal{padding:22px}.journal ul{padding:0;margin:0;list-style:none;max-height:290px;overflow:auto}.journal li{border-top:1px solid #2c4149;padding:10px 0;font-size:12px;line-height:1.5;color:#b8cacb}.journal strong{color:#e9f4e7}.empty{font-size:13px;color:#829ca4}
-    .utility{border:1px solid #4b5f64;border-radius:11px;background:transparent;color:#d0dbde;padding:8px 12px;font-size:12px;font-weight:700}.utility:hover{background:#263b44}.foot{margin-top:22px;color:#8aa3a9;font-size:12px;line-height:1.55}
-    @media(max-width:820px){.layout{grid-template-columns:1fr}.aside{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.tiles{max-height:none;min-height:180px}}
-    @media(max-width:550px){.shell{padding:18px 12px 35px}.aside{display:flex}.panelhead{padding:18px 14px 12px}.search{margin:0 14px 12px;width:calc(100% - 28px)}.tiles{padding:2px 12px 20px;grid-template-columns:repeat(2,minmax(0,1fr))}.progress{width:100%}.tile{min-height:76px}}
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="theme-color" content="#071719">
+<meta name="description" content="First Light: a deterministic concept-combination discovery game.">
+<title>First Light</title>
+<style>
+:root{font:15px/1.4 -apple-system,BlinkMacSystemFont,"SF Pro Text",system-ui,sans-serif;color:#eef7f3;background:#071719;--bg:#071719;--panel:#0c2427;--line:#244348;--soft:#89a49f;--mint:#b8f3cf;--mint2:#6fcca0;--gold:#ead49c;--danger:#d7a3a3}*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}html,body{margin:0;min-height:100%;background:var(--bg)}body{display:flex;justify-content:center}button,input{font:inherit}button{appearance:none;border:0;color:inherit;background:none;cursor:pointer}button:focus-visible,input:focus-visible{outline:2px solid var(--mint);outline-offset:2px}.phone{width:100%;max-width:430px;min-height:100dvh;padding:calc(env(safe-area-inset-top) + 14px) 14px calc(env(safe-area-inset-bottom) + 36px);background:linear-gradient(180deg,#0b2528 0,#071719 35rem)}
+.top{padding:1px 2px 11px}.topline{display:flex;justify-content:space-between;align-items:end;gap:12px}.wordmark{display:block;font-size:.72rem;font-weight:850;letter-spacing:.2em;color:var(--mint)}h1{font-size:1.48rem;line-height:1.05;letter-spacing:-.035em;margin:5px 0 0}.count{font-weight:700;color:#d2e5de;font-variant-numeric:tabular-nums}.track{height:3px;background:#163437;border-radius:99px;overflow:hidden;margin-top:11px}.bar{display:block;height:100%;width:0;background:var(--mint2);transition:width .35s ease}
+.mixer{position:sticky;top:calc(env(safe-area-inset-top) + 7px);z-index:10;background:#0a2225ef;backdrop-filter:blur(18px);border:1px solid #315359;border-radius:19px;padding:10px;box-shadow:0 12px 28px #0008}.slots{display:grid;grid-template-columns:1fr auto 1fr;gap:7px;align-items:stretch}.slot{min-height:54px;border-radius:13px;background:#07191b;border:1px solid #25464a;padding:8px;text-align:left}.slot span{display:block;font-size:.64rem;text-transform:uppercase;letter-spacing:.11em;color:#708f8b}.slot strong{display:block;margin-top:4px;font-size:.95rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.slot.filled{border-color:#6fa98f;background:#12322d}.plus{display:grid;place-items:center;color:#688984;font-weight:750}.actions{display:grid;grid-template-columns:1fr 42px;gap:7px;margin-top:8px}.combine{height:42px;border-radius:12px;background:var(--mint);color:#08231f;font-weight:850}.combine:disabled{background:#1b3939;color:#648681}.clear{height:42px;border-radius:12px;background:#143033;color:#9eb6b1;font-size:1.1rem}.status{min-height:18px;margin:8px 2px 0;color:#9fb8b3;font-size:.78rem}
+.reveal{margin:11px 0 0;border:1px solid #47725f;background:#113429;border-radius:15px;padding:12px;animation:rise .25s ease}.reveal[hidden]{display:none}.reveal small{display:block;color:#8bb19e;text-transform:uppercase;letter-spacing:.11em}.reveal strong{display:block;color:#d9ffe4;font-size:1.18rem;margin-top:2px}.reveal p{margin:3px 0 0;color:#a6c3b8;font-size:.8rem}.reveal button{margin-top:8px;color:var(--mint);font-size:.82rem;font-weight:750}
+.world{padding:20px 1px 0}.head{display:flex;justify-content:space-between;align-items:end;gap:10px;margin-bottom:9px}.head h2{font-size:1rem;margin:0}.sub{font-size:.76rem;color:#819e98;margin:2px 0 0}.search{width:100%;border:1px solid #29494c;background:#081b1e;color:#eff9f5;border-radius:12px;padding:10px 11px;margin:0 0 9px}.search[hidden]{display:none}.tabs{display:flex;gap:6px;overflow-x:auto;padding:0 0 9px;scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}.tab{flex:0 0 auto;border:1px solid #29494c;border-radius:999px;padding:7px 10px;color:#9fb6b2;font-size:.77rem}.tab[aria-pressed=true]{background:#1d433a;border-color:#609078;color:#edfff4}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.concept{min-height:54px;text-align:left;border:1px solid #254347;background:#0b2225;border-radius:14px;padding:9px 10px}.concept:active{transform:scale(.985)}.concept[aria-pressed=true]{border-color:#9bd7b5;background:#1d4338}.concept b{display:block;font-size:.92rem}.concept small{display:block;color:#7f9b96;font-size:.69rem;margin-top:2px}.concept .fresh{color:var(--gold)}.empty{border:1px dashed #284548;border-radius:13px;padding:12px;color:#78938e;font-size:.8rem}
+.memory{padding:21px 1px 0}.memory[hidden]{display:none}.memory-list{display:flex;flex-direction:column;gap:1px;border-top:1px solid #173438}.memory-row{padding:9px 2px;border-bottom:1px solid #173438;font-size:.81rem;color:#a8c0ba}.memory-row strong{color:var(--mint)}.more{font-size:.74rem;color:#708f89;margin-top:6px}.utility{margin-top:25px;border-top:1px solid #173438;padding-top:11px}.utility summary{cursor:pointer;color:#617f79;font-size:.75rem}.utility-body{padding:10px 0;color:#7d9993;font-size:.75rem}.utility button{color:#d3a2a2;text-decoration:underline;margin-top:8px}.foot{margin-top:20px;color:#597670;font-size:.7rem;line-height:1.5}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}@media(min-width:431px){body{padding:18px 0}.phone{min-height:calc(100dvh - 36px);border:1px solid #18383b;border-radius:28px;box-shadow:0 24px 80px #000a}}
+</style>
 </head>
-<body>
-  <main class="shell">
-    <header class="top">
-      <div><span class="eyebrow">Experimental playtest · version 0.1</span><h1 class="brand">FIRST LIGHT<span style="color:#99e4bf">.</span></h1><p class="sub">A small world with fixed laws. Discover what happens when two known ideas meet. Tap two elements, or drag one onto another. Even the same element twice may react.</p></div>
-      <div class="progress" aria-live="polite"><small>Discoveries</small><strong id="count">—</strong><div class="track"><div class="bar" id="bar"></div></div></div>
-    </header>
-    <div class="layout">
-      <section class="panel" aria-label="Discovered elements"><div class="panelhead"><h2>Your elements</h2><span id="filtered" class="minor"></span></div><input id="search" class="search" type="search" placeholder="Search discovered elements…" aria-label="Search discovered elements"><div id="elements" class="tiles" aria-live="polite"></div></section>
-      <aside class="aside">
-        <section class="panel arena" aria-label="Combination workspace"><h2>Combination chamber</h2><div class="slots"><div id="slot-a" class="slot">Choose one</div><span class="plus">+</span><div id="slot-b" class="slot">Choose another</div></div><p class="notice" id="notice" role="status" aria-live="polite">Select two elements to test a law. Your collection saves automatically on this device.</p></section>
-        <section class="panel journal" aria-label="Discovery history"><div style="display:flex;justify-content:space-between;align-items:center;gap:8px"><h2>Field journal</h2><button class="utility" id="reset" type="button">Reset save</button></div><ul id="journal"></ul></section>
-      </aside>
-    </div>
-    <p class="foot">Original, provisional game. Runs entirely in your browser, without account registration or AI calls. Saves are stored on this device for this version. Public playtest: share feedback with the creator.</p>
-  </main>
-  <script type="module" src="./app.mjs"></script>
-</body>
-</html>
+<body><main class="phone">
+<header class="top"><div class="topline"><div><span class="wordmark">FIRST LIGHT</span><h1>Discover the world.</h1></div><div id="count" class="count">6 / 100</div></div><div class="track"><i id="bar" class="bar"></i></div></header>
+<section class="mixer" aria-live="polite"><div class="slots"><button id="slot-a" class="slot" type="button"><span>A</span><strong>Choose</strong></button><div class="plus">+</div><button id="slot-b" class="slot" type="button"><span>B</span><strong>Choose</strong></button></div><div class="actions"><button id="combine" class="combine" type="button" disabled>Combine</button><button id="clear" class="clear" type="button" aria-label="Clear selection">×</button></div><p id="status" class="status" role="status">Tap any two concepts.</p></section>
+<section id="discovery" class="reveal" hidden><small>new discovery</small><strong id="discovery-name"></strong><p id="discovery-meta"></p><button id="use-discovery" type="button">Use this next →</button></section>
+<section class="world"><div class="head"><div><h2>Concepts</h2><p id="world-sub" class="sub">Primordial</p></div><span id="visible-count" class="sub"></span></div><input id="search" class="search" type="search" placeholder="Find a concept" autocomplete="off" hidden><div id="tabs" class="tabs" aria-label="Discovered categories"></div><div id="elements" class="grid" aria-live="polite"></div></section>
+<section id="memory" class="memory" hidden><div class="head"><div><h2>Memory</h2><p class="sub">What you have discovered</p></div></div><div id="journal" class="memory-list"></div><div id="memory-more" class="more"></div></section>
+<details class="utility"><summary>World controls</summary><div class="utility-body"><div>Version 0.2 · deterministic local play · no AI calls.</div><button id="reset" type="button">Reset discoveries</button></div></details>
+<p class="foot">Your progress is stored on this device. Categories organize what you already own; they do not reveal hidden combinations.</p>
+</main><script type="module" src="./app.mjs"></script></body></html>
