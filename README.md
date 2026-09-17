@@ -1,18 +1,55 @@
 # First Light — public playtest
 
-Experimental browser game with 58 original concepts, six starters, 55 deterministic recipes, tap/tap or drag/drop combinations, a discovery journal, and browser-local save data. Designed for iPhone and desktop without an account or API credentials.
+First Light is a deterministic concept-combination discovery game built for fast mobile play.
 
-**Original game:** https://episode5.github.io/first-light-playtest/ .
+**Play:** https://episode5.github.io/first-light-playtest/
 
-**Optional Operational Chain mechanic test:** https://episode5.github.io/first-light-playtest/chain-lab/ . This is a separate experimental browser surface, not a replacement for the original game. Its `?mode=baseline` and `?mode=chains` conditions start with the same three real witnessed recipes and use the same publicly released seed and resolver. Manually install two witnessed recipes sharing an exact intermediate, operate their stages, or divert an intermediate to test it against any owned concept. The lab's progress and counters are ephemeral and separate from the original game's localStorage save. It is not a blind playtest or evidence of enjoyment.
+## v0.2 — Mobile Mastery
 
-The private development repository `Doodle-God-Exp` remains separate. Only the experimental game pages and necessary runtime modules are public; no private research memos, architecture documents, original private experiment module, provider keys, governance fixtures or paid provider artifacts are mirrored. Neither mode has live AI, paid calls or telemetry uploads. The concept graph is provisional playtest content rather than released production canon.
+This build concentrates entirely on the core discovery loop.
 
-Pages deployment is `.github/workflows/pages.yml`. It explicitly packages `index.html`, `app.mjs`, `seed.mjs`, `dist/core/resolveRecipe.js`, `chain-lab/index.html`, `chain-lab/app.mjs` and `.nojekyll`. It does not deploy the repository root. Deployment checks JavaScript syntax, the full seed, pair symmetry and chain fixture before publishing.
+- 100 original concepts;
+- six starters;
+- 131 deterministic recipes;
+- nine semantic categories;
+- iPhone-first single-column interface;
+- two explicit experiment slots plus one Combine action;
+- categories appear only when the player owns something in them;
+- search stays hidden until the collection is large enough to need it;
+- discovery memory appears only after the player has actually discovered something;
+- new concepts can immediately become the next experiment;
+- fast repeated partner testing keeps Concept A loaded after a combination;
+- browser-local save data;
+- one-way migration of valid v0.1 discoveries when possible;
+- no account, telemetry, runtime AI or paid API calls.
+
+The graph is provisional playtest content rather than released production canon. It is hand-authored and validated for unique unordered pairs, full starter reachability and reverse-pair symmetry.
+
+## Current design goal
+
+First Light should become deep through the graph itself rather than through an added metagame.
+
+The main content priorities are coherent categories, intuitive or retrospectively defensible recipes, converging paths, cross-category relationships and late discoveries that make earlier concepts interesting again. Raw concept count is not the goal.
+
+The previous public Operational Chain / Metamyne mechanic test has been removed from the deployed surface. That research remains preserved privately for possible future use; it is not part of the current First Light product direction.
+
+## Deployment boundary
+
+The private development repository `Doodle-God-Exp` remains separate. This public repository exposes only the standalone game and necessary deterministic runtime modules.
+
+`.github/workflows/pages.yml` packages an explicit allowlist:
+
+- `index.html`
+- `app.mjs`
+- `seed.mjs`
+- `dist/core/resolveRecipe.js`
+- `.nojekyll`
+
+The deployment workflow validates JavaScript syntax, 100-concept reachability, recipe symmetry, self-pair behavior and a known no-reaction case before publishing.
 
 ## Feedback
 
-For the original game, note one satisfying discovery, one arbitrary/confusing discovery and one interface problem. The original save persists on the same browser where localStorage works and its Reset button clears it. For the chain experiment, try both modes and assess whether installing and diverting a known recipe gave you a reason to experiment with an old concept; also note any extra taps or repetitive known-stage operations. Avoid treating the pre-seeded fixture or a prompted combination as an independent discovery.
+Useful feedback is concrete: one satisfying discovery, one arbitrary or confusing discovery, one moment of inventory friction, and whether a newly discovered concept naturally made you want to try another combination.
 
 ## Originality and access
 
