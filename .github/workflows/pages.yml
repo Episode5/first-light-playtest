@@ -31,15 +31,15 @@ jobs:
           node --check app.mjs
           node --check seed.mjs
           node --check dist/core/resolveRecipe.js
-          node --check chain-lab/app.mjs
           node --input-type=module <<'NODE'
           import assert from 'node:assert/strict';
           import {ELEMENTS, STARTER_IDS, RECIPES, validateSeed} from './seed.mjs';
           import {resolveRecipe} from './dist/core/resolveRecipe.js';
           const checked = validateSeed();
-          assert.equal(checked.elementCount, 58);
+          assert.equal(checked.elementCount, 100);
           assert.equal(checked.starterCount, 6);
-          assert.equal(checked.reachableCount, 58);
+          assert.equal(checked.reachableCount, 100);
+          assert.ok(RECIPES.length >= 120);
           const ownedElementIds = new Set(ELEMENTS.map(e => e.id));
           for (const recipe of RECIPES) {
             const state = {ownedElementIds};
@@ -47,37 +47,22 @@ jobs:
             assert.equal(resolveRecipe(recipe.inputBId, recipe.inputAId, RECIPES, state).recipe.resultId, recipe.resultId);
           }
           assert.equal(resolveRecipe('stone','stone',RECIPES,{ownedElementIds}).recipe.resultId,'gravel');
-          assert.equal(resolveRecipe('water','water',RECIPES,{ownedElementIds}).type,'no-reaction');
-          // The separate chain page starts with real witnessed recipes, never hidden outputs.
-          const tutorial = new Set(STARTER_IDS);
-          const witnessed = [];
-          for (const [a,b] of [['water','earth'],['mud','fire'],['earth','fire']]) {
-            assert.ok(tutorial.has(a) && tutorial.has(b));
-            const outcome = resolveRecipe(a,b,RECIPES,{ownedElementIds:tutorial});
-            assert.equal(outcome.type,'recipe');
-            tutorial.add(outcome.recipe.resultId);
-            witnessed.push(outcome.recipe);
-          }
-          assert.equal(tutorial.size,9);
-          assert.ok(witnessed.some(first => witnessed.some(second => first.id !== second.id &&
-            [second.inputAId,second.inputBId].includes(first.resultId))));
-          assert.equal(resolveRecipe('mud','time',RECIPES,{ownedElementIds:tutorial}).recipe.resultId,'clay');
-          assert.equal(resolveRecipe('mud','water',RECIPES,{ownedElementIds:tutorial}).type,'no-reaction');
-          console.log(`PASS: ${checked.elementCount} concepts, ${RECIPES.length} recipes, ${STARTER_IDS.length} starters, reachability, pair symmetry, and chain fixture`);
+          assert.equal(resolveRecipe('water','water',RECIPES,{ownedElementIds}).recipe.resultId,'ocean');
+          assert.equal(resolveRecipe('air','air',RECIPES,{ownedElementIds}).recipe.resultId,'sky');
+          assert.equal(resolveRecipe('water','human',RECIPES,{ownedElementIds}).type,'no-reaction');
+          console.log(`PASS: ${checked.elementCount} concepts, ${RECIPES.length} recipes, ${STARTER_IDS.length} starters, full reachability and reverse-pair symmetry`);
           NODE
       - name: Assemble explicit public-file allowlist
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p _site/dist/core _site/chain-lab
+          mkdir -p _site/dist/core
           cp index.html _site/index.html
           cp app.mjs _site/app.mjs
           cp seed.mjs _site/seed.mjs
           cp dist/core/resolveRecipe.js _site/dist/core/resolveRecipe.js
-          cp chain-lab/index.html _site/chain-lab/index.html
-          cp chain-lab/app.mjs _site/chain-lab/app.mjs
           touch _site/.nojekyll
-          test "$(find _site -type f | wc -l | tr -d ' ')" = 7
+          test "$(find _site -type f | wc -l | tr -d ' ')" = 5
           if grep -rE 'OPENAI_API_KEY|ANTHROPIC_API_KEY|sk-proj-' _site; then
             echo 'Found forbidden secret marker in public package'; exit 1
           fi
