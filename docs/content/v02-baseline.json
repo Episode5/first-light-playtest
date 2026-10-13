@@ -1,0 +1,1786 @@
+{
+  "sourceCommit": "08ea60bac8330e2568b9828077347dfb8db64d44",
+  "concepts": [
+    {
+      "id": "water",
+      "name": "Water",
+      "depth": 0,
+      "prerequisites": 0
+    },
+    {
+      "id": "fire",
+      "name": "Fire",
+      "depth": 0,
+      "prerequisites": 0
+    },
+    {
+      "id": "earth",
+      "name": "Earth",
+      "depth": 0,
+      "prerequisites": 0
+    },
+    {
+      "id": "air",
+      "name": "Air",
+      "depth": 0,
+      "prerequisites": 0
+    },
+    {
+      "id": "human",
+      "name": "Human",
+      "depth": 0,
+      "prerequisites": 0
+    },
+    {
+      "id": "time",
+      "name": "Time",
+      "depth": 0,
+      "prerequisites": 0
+    },
+    {
+      "id": "mud",
+      "name": "Mud",
+      "depth": 1,
+      "prerequisites": 2
+    },
+    {
+      "id": "steam",
+      "name": "Steam",
+      "depth": 1,
+      "prerequisites": 2
+    },
+    {
+      "id": "dust",
+      "name": "Dust",
+      "depth": 1,
+      "prerequisites": 2
+    },
+    {
+      "id": "lava",
+      "name": "Lava",
+      "depth": 1,
+      "prerequisites": 2
+    },
+    {
+      "id": "energy",
+      "name": "Energy",
+      "depth": 1,
+      "prerequisites": 2
+    },
+    {
+      "id": "stone",
+      "name": "Stone",
+      "depth": 2,
+      "prerequisites": 4
+    },
+    {
+      "id": "sand",
+      "name": "Sand",
+      "depth": 3,
+      "prerequisites": 5
+    },
+    {
+      "id": "gravel",
+      "name": "Gravel",
+      "depth": 3,
+      "prerequisites": 5
+    },
+    {
+      "id": "ore",
+      "name": "Ore",
+      "depth": 3,
+      "prerequisites": 5
+    },
+    {
+      "id": "metal",
+      "name": "Metal",
+      "depth": 4,
+      "prerequisites": 6
+    },
+    {
+      "id": "glass",
+      "name": "Glass",
+      "depth": 4,
+      "prerequisites": 7
+    },
+    {
+      "id": "clay",
+      "name": "Clay",
+      "depth": 2,
+      "prerequisites": 4
+    },
+    {
+      "id": "brick",
+      "name": "Brick",
+      "depth": 2,
+      "prerequisites": 4
+    },
+    {
+      "id": "pottery",
+      "name": "Pottery",
+      "depth": 3,
+      "prerequisites": 6
+    },
+    {
+      "id": "life",
+      "name": "Life",
+      "depth": 2,
+      "prerequisites": 4
+    },
+    {
+      "id": "algae",
+      "name": "Algae",
+      "depth": 3,
+      "prerequisites": 5
+    },
+    {
+      "id": "plant",
+      "name": "Plant",
+      "depth": 3,
+      "prerequisites": 6
+    },
+    {
+      "id": "seed",
+      "name": "Seed",
+      "depth": 4,
+      "prerequisites": 7
+    },
+    {
+      "id": "tree",
+      "name": "Tree",
+      "depth": 4,
+      "prerequisites": 8
+    },
+    {
+      "id": "forest",
+      "name": "Forest",
+      "depth": 5,
+      "prerequisites": 9
+    },
+    {
+      "id": "animal",
+      "name": "Animal",
+      "depth": 6,
+      "prerequisites": 10
+    },
+    {
+      "id": "fish",
+      "name": "Fish",
+      "depth": 3,
+      "prerequisites": 6
+    },
+    {
+      "id": "tool",
+      "name": "Tool",
+      "depth": 3,
+      "prerequisites": 6
+    },
+    {
+      "id": "wood",
+      "name": "Wood",
+      "depth": 5,
+      "prerequisites": 13
+    },
+    {
+      "id": "shelter",
+      "name": "Shelter",
+      "depth": 6,
+      "prerequisites": 14
+    },
+    {
+      "id": "wheel",
+      "name": "Wheel",
+      "depth": 6,
+      "prerequisites": 14
+    },
+    {
+      "id": "cart",
+      "name": "Cart",
+      "depth": 7,
+      "prerequisites": 15
+    },
+    {
+      "id": "house",
+      "name": "House",
+      "depth": 7,
+      "prerequisites": 17
+    },
+    {
+      "id": "village",
+      "name": "Village",
+      "depth": 5,
+      "prerequisites": 10
+    },
+    {
+      "id": "city",
+      "name": "City",
+      "depth": 6,
+      "prerequisites": 11
+    },
+    {
+      "id": "knowledge",
+      "name": "Knowledge",
+      "depth": 1,
+      "prerequisites": 2
+    },
+    {
+      "id": "writing",
+      "name": "Writing",
+      "depth": 4,
+      "prerequisites": 8
+    },
+    {
+      "id": "book",
+      "name": "Book",
+      "depth": 6,
+      "prerequisites": 16
+    },
+    {
+      "id": "school",
+      "name": "School",
+      "depth": 7,
+      "prerequisites": 17
+    },
+    {
+      "id": "experiment",
+      "name": "Experiment",
+      "depth": 2,
+      "prerequisites": 6
+    },
+    {
+      "id": "science",
+      "name": "Science",
+      "depth": 3,
+      "prerequisites": 7
+    },
+    {
+      "id": "electricity",
+      "name": "Electricity",
+      "depth": 4,
+      "prerequisites": 8
+    },
+    {
+      "id": "circuit",
+      "name": "Circuit",
+      "depth": 5,
+      "prerequisites": 14
+    },
+    {
+      "id": "machine",
+      "name": "Machine",
+      "depth": 5,
+      "prerequisites": 9
+    },
+    {
+      "id": "engine",
+      "name": "Engine",
+      "depth": 6,
+      "prerequisites": 12
+    },
+    {
+      "id": "vehicle",
+      "name": "Vehicle",
+      "depth": 7,
+      "prerequisites": 19
+    },
+    {
+      "id": "computer",
+      "name": "Computer",
+      "depth": 6,
+      "prerequisites": 17
+    },
+    {
+      "id": "network",
+      "name": "Network",
+      "depth": 7,
+      "prerequisites": 18
+    },
+    {
+      "id": "communication",
+      "name": "Communication",
+      "depth": 8,
+      "prerequisites": 19
+    },
+    {
+      "id": "sound",
+      "name": "Sound",
+      "depth": 2,
+      "prerequisites": 3
+    },
+    {
+      "id": "music",
+      "name": "Music",
+      "depth": 3,
+      "prerequisites": 5
+    },
+    {
+      "id": "rhythm",
+      "name": "Rhythm",
+      "depth": 4,
+      "prerequisites": 7
+    },
+    {
+      "id": "society",
+      "name": "Society",
+      "depth": 1,
+      "prerequisites": 1
+    },
+    {
+      "id": "culture",
+      "name": "Culture",
+      "depth": 4,
+      "prerequisites": 7
+    },
+    {
+      "id": "trade",
+      "name": "Trade",
+      "depth": 6,
+      "prerequisites": 11
+    },
+    {
+      "id": "market",
+      "name": "Market",
+      "depth": 7,
+      "prerequisites": 15
+    },
+    {
+      "id": "history",
+      "name": "History",
+      "depth": 5,
+      "prerequisites": 9
+    },
+    {
+      "id": "cloud",
+      "name": "Cloud",
+      "depth": 1,
+      "prerequisites": 2
+    },
+    {
+      "id": "rain",
+      "name": "Rain",
+      "depth": 2,
+      "prerequisites": 3
+    },
+    {
+      "id": "storm",
+      "name": "Storm",
+      "depth": 2,
+      "prerequisites": 3
+    },
+    {
+      "id": "lightning",
+      "name": "Lightning",
+      "depth": 2,
+      "prerequisites": 4
+    },
+    {
+      "id": "ocean",
+      "name": "Ocean",
+      "depth": 1,
+      "prerequisites": 1
+    },
+    {
+      "id": "mountain",
+      "name": "Mountain",
+      "depth": 1,
+      "prerequisites": 1
+    },
+    {
+      "id": "river",
+      "name": "River",
+      "depth": 2,
+      "prerequisites": 3
+    },
+    {
+      "id": "volcano",
+      "name": "Volcano",
+      "depth": 2,
+      "prerequisites": 3
+    },
+    {
+      "id": "smoke",
+      "name": "Smoke",
+      "depth": 6,
+      "prerequisites": 14
+    },
+    {
+      "id": "ash",
+      "name": "Ash",
+      "depth": 3,
+      "prerequisites": 5
+    },
+    {
+      "id": "sky",
+      "name": "Sky",
+      "depth": 1,
+      "prerequisites": 1
+    },
+    {
+      "id": "space",
+      "name": "Space",
+      "depth": 2,
+      "prerequisites": 3
+    },
+    {
+      "id": "star",
+      "name": "Star",
+      "depth": 3,
+      "prerequisites": 5
+    },
+    {
+      "id": "coal",
+      "name": "Coal",
+      "depth": 6,
+      "prerequisites": 10
+    },
+    {
+      "id": "steel",
+      "name": "Steel",
+      "depth": 7,
+      "prerequisites": 15
+    },
+    {
+      "id": "paper",
+      "name": "Paper",
+      "depth": 6,
+      "prerequisites": 15
+    },
+    {
+      "id": "ink",
+      "name": "Ink",
+      "depth": 7,
+      "prerequisites": 11
+    },
+    {
+      "id": "fiber",
+      "name": "Fiber",
+      "depth": 4,
+      "prerequisites": 12
+    },
+    {
+      "id": "fabric",
+      "name": "Fabric",
+      "depth": 5,
+      "prerequisites": 13
+    },
+    {
+      "id": "rope",
+      "name": "Rope",
+      "depth": 5,
+      "prerequisites": 13
+    },
+    {
+      "id": "bacteria",
+      "name": "Bacteria",
+      "depth": 3,
+      "prerequisites": 7
+    },
+    {
+      "id": "fungus",
+      "name": "Fungus",
+      "depth": 5,
+      "prerequisites": 9
+    },
+    {
+      "id": "flower",
+      "name": "Flower",
+      "depth": 4,
+      "prerequisites": 7
+    },
+    {
+      "id": "fruit",
+      "name": "Fruit",
+      "depth": 5,
+      "prerequisites": 9
+    },
+    {
+      "id": "bird",
+      "name": "Bird",
+      "depth": 7,
+      "prerequisites": 11
+    },
+    {
+      "id": "insect",
+      "name": "Insect",
+      "depth": 7,
+      "prerequisites": 11
+    },
+    {
+      "id": "boat",
+      "name": "Boat",
+      "depth": 6,
+      "prerequisites": 14
+    },
+    {
+      "id": "sail",
+      "name": "Sail",
+      "depth": 7,
+      "prerequisites": 17
+    },
+    {
+      "id": "bridge",
+      "name": "Bridge",
+      "depth": 6,
+      "prerequisites": 16
+    },
+    {
+      "id": "road",
+      "name": "Road",
+      "depth": 8,
+      "prerequisites": 16
+    },
+    {
+      "id": "farm",
+      "name": "Farm",
+      "depth": 4,
+      "prerequisites": 8
+    },
+    {
+      "id": "factory",
+      "name": "Factory",
+      "depth": 7,
+      "prerequisites": 18
+    },
+    {
+      "id": "library",
+      "name": "Library",
+      "depth": 7,
+      "prerequisites": 20
+    },
+    {
+      "id": "language",
+      "name": "Language",
+      "depth": 9,
+      "prerequisites": 20
+    },
+    {
+      "id": "mathematics",
+      "name": "Mathematics",
+      "depth": 5,
+      "prerequisites": 9
+    },
+    {
+      "id": "map",
+      "name": "Map",
+      "depth": 5,
+      "prerequisites": 9
+    },
+    {
+      "id": "astronomy",
+      "name": "Astronomy",
+      "depth": 4,
+      "prerequisites": 9
+    },
+    {
+      "id": "radio",
+      "name": "Radio",
+      "depth": 9,
+      "prerequisites": 20
+    },
+    {
+      "id": "internet",
+      "name": "Internet",
+      "depth": 9,
+      "prerequisites": 20
+    },
+    {
+      "id": "robot",
+      "name": "Robot",
+      "depth": 7,
+      "prerequisites": 18
+    },
+    {
+      "id": "satellite",
+      "name": "Satellite",
+      "depth": 9,
+      "prerequisites": 22
+    },
+    {
+      "id": "story",
+      "name": "Story",
+      "depth": 5,
+      "prerequisites": 9
+    }
+  ],
+  "recipes": [
+    {
+      "id": "proto-recipe-001",
+      "inputAId": "water",
+      "inputBId": "earth",
+      "resultId": "mud",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-002",
+      "inputAId": "water",
+      "inputBId": "fire",
+      "resultId": "steam",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-003",
+      "inputAId": "earth",
+      "inputBId": "air",
+      "resultId": "dust",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-004",
+      "inputAId": "earth",
+      "inputBId": "fire",
+      "resultId": "lava",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-005",
+      "inputAId": "fire",
+      "inputBId": "air",
+      "resultId": "energy",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-006",
+      "inputAId": "lava",
+      "inputBId": "water",
+      "resultId": "stone",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-007",
+      "inputAId": "lava",
+      "inputBId": "time",
+      "resultId": "stone",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-008",
+      "inputAId": "stone",
+      "inputBId": "time",
+      "resultId": "sand",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-009",
+      "inputAId": "stone",
+      "inputBId": "stone",
+      "resultId": "gravel",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-010",
+      "inputAId": "gravel",
+      "inputBId": "water",
+      "resultId": "sand",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-011",
+      "inputAId": "earth",
+      "inputBId": "stone",
+      "resultId": "ore",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-012",
+      "inputAId": "ore",
+      "inputBId": "fire",
+      "resultId": "metal",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-013",
+      "inputAId": "sand",
+      "inputBId": "fire",
+      "resultId": "glass",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-014",
+      "inputAId": "mud",
+      "inputBId": "time",
+      "resultId": "clay",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-015",
+      "inputAId": "mud",
+      "inputBId": "fire",
+      "resultId": "brick",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-016",
+      "inputAId": "clay",
+      "inputBId": "fire",
+      "resultId": "pottery",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-017",
+      "inputAId": "water",
+      "inputBId": "energy",
+      "resultId": "life",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-018",
+      "inputAId": "life",
+      "inputBId": "water",
+      "resultId": "algae",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-019",
+      "inputAId": "life",
+      "inputBId": "earth",
+      "resultId": "plant",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-020",
+      "inputAId": "plant",
+      "inputBId": "life",
+      "resultId": "seed",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-021",
+      "inputAId": "seed",
+      "inputBId": "earth",
+      "resultId": "plant",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-022",
+      "inputAId": "plant",
+      "inputBId": "time",
+      "resultId": "tree",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-023",
+      "inputAId": "tree",
+      "inputBId": "tree",
+      "resultId": "forest",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-024",
+      "inputAId": "life",
+      "inputBId": "forest",
+      "resultId": "animal",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-025",
+      "inputAId": "animal",
+      "inputBId": "water",
+      "resultId": "fish",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-026",
+      "inputAId": "human",
+      "inputBId": "stone",
+      "resultId": "tool",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-027",
+      "inputAId": "tree",
+      "inputBId": "tool",
+      "resultId": "wood",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-028",
+      "inputAId": "human",
+      "inputBId": "wood",
+      "resultId": "shelter",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-029",
+      "inputAId": "tool",
+      "inputBId": "wood",
+      "resultId": "wheel",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-030",
+      "inputAId": "wheel",
+      "inputBId": "wood",
+      "resultId": "cart",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-031",
+      "inputAId": "shelter",
+      "inputBId": "brick",
+      "resultId": "house",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-032",
+      "inputAId": "house",
+      "inputBId": "house",
+      "resultId": "village",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-033",
+      "inputAId": "village",
+      "inputBId": "village",
+      "resultId": "city",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-034",
+      "inputAId": "human",
+      "inputBId": "time",
+      "resultId": "knowledge",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-035",
+      "inputAId": "knowledge",
+      "inputBId": "tool",
+      "resultId": "writing",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-036",
+      "inputAId": "writing",
+      "inputBId": "wood",
+      "resultId": "book",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-037",
+      "inputAId": "book",
+      "inputBId": "human",
+      "resultId": "school",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-038",
+      "inputAId": "knowledge",
+      "inputBId": "energy",
+      "resultId": "experiment",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-039",
+      "inputAId": "experiment",
+      "inputBId": "time",
+      "resultId": "science",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-040",
+      "inputAId": "science",
+      "inputBId": "energy",
+      "resultId": "electricity",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-041",
+      "inputAId": "electricity",
+      "inputBId": "metal",
+      "resultId": "circuit",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-042",
+      "inputAId": "tool",
+      "inputBId": "metal",
+      "resultId": "machine",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-043",
+      "inputAId": "machine",
+      "inputBId": "energy",
+      "resultId": "engine",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-044",
+      "inputAId": "engine",
+      "inputBId": "wheel",
+      "resultId": "vehicle",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-045",
+      "inputAId": "machine",
+      "inputBId": "circuit",
+      "resultId": "computer",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-046",
+      "inputAId": "computer",
+      "inputBId": "computer",
+      "resultId": "network",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-047",
+      "inputAId": "network",
+      "inputBId": "human",
+      "resultId": "communication",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-048",
+      "inputAId": "energy",
+      "inputBId": "air",
+      "resultId": "sound",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-049",
+      "inputAId": "human",
+      "inputBId": "sound",
+      "resultId": "music",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-050",
+      "inputAId": "music",
+      "inputBId": "time",
+      "resultId": "rhythm",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-051",
+      "inputAId": "human",
+      "inputBId": "human",
+      "resultId": "society",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-052",
+      "inputAId": "society",
+      "inputBId": "music",
+      "resultId": "culture",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-053",
+      "inputAId": "society",
+      "inputBId": "cart",
+      "resultId": "trade",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-054",
+      "inputAId": "trade",
+      "inputBId": "city",
+      "resultId": "market",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-055",
+      "inputAId": "knowledge",
+      "inputBId": "writing",
+      "resultId": "history",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-056",
+      "inputAId": "air",
+      "inputBId": "water",
+      "resultId": "cloud",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-057",
+      "inputAId": "cloud",
+      "inputBId": "water",
+      "resultId": "rain",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-058",
+      "inputAId": "cloud",
+      "inputBId": "energy",
+      "resultId": "storm",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-059",
+      "inputAId": "storm",
+      "inputBId": "energy",
+      "resultId": "lightning",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-060",
+      "inputAId": "water",
+      "inputBId": "water",
+      "resultId": "ocean",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-061",
+      "inputAId": "earth",
+      "inputBId": "earth",
+      "resultId": "mountain",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-062",
+      "inputAId": "mountain",
+      "inputBId": "water",
+      "resultId": "river",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-063",
+      "inputAId": "mountain",
+      "inputBId": "fire",
+      "resultId": "volcano",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-064",
+      "inputAId": "fire",
+      "inputBId": "wood",
+      "resultId": "smoke",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-065",
+      "inputAId": "fire",
+      "inputBId": "tree",
+      "resultId": "ash",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-066",
+      "inputAId": "air",
+      "inputBId": "air",
+      "resultId": "sky",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-067",
+      "inputAId": "sky",
+      "inputBId": "time",
+      "resultId": "space",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-068",
+      "inputAId": "fire",
+      "inputBId": "space",
+      "resultId": "star",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-069",
+      "inputAId": "forest",
+      "inputBId": "time",
+      "resultId": "coal",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-070",
+      "inputAId": "metal",
+      "inputBId": "coal",
+      "resultId": "steel",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-071",
+      "inputAId": "wood",
+      "inputBId": "knowledge",
+      "resultId": "paper",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-072",
+      "inputAId": "coal",
+      "inputBId": "water",
+      "resultId": "ink",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-073",
+      "inputAId": "plant",
+      "inputBId": "tool",
+      "resultId": "fiber",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-074",
+      "inputAId": "fiber",
+      "inputBId": "human",
+      "resultId": "fabric",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-075",
+      "inputAId": "fiber",
+      "inputBId": "tool",
+      "resultId": "rope",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-076",
+      "inputAId": "life",
+      "inputBId": "mud",
+      "resultId": "bacteria",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-077",
+      "inputAId": "life",
+      "inputBId": "tree",
+      "resultId": "fungus",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-078",
+      "inputAId": "plant",
+      "inputBId": "energy",
+      "resultId": "flower",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-079",
+      "inputAId": "flower",
+      "inputBId": "time",
+      "resultId": "fruit",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-080",
+      "inputAId": "animal",
+      "inputBId": "air",
+      "resultId": "bird",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-081",
+      "inputAId": "animal",
+      "inputBId": "plant",
+      "resultId": "insect",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-082",
+      "inputAId": "wood",
+      "inputBId": "water",
+      "resultId": "boat",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-083",
+      "inputAId": "boat",
+      "inputBId": "fabric",
+      "resultId": "sail",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-084",
+      "inputAId": "wood",
+      "inputBId": "river",
+      "resultId": "bridge",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-085",
+      "inputAId": "stone",
+      "inputBId": "cart",
+      "resultId": "road",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-086",
+      "inputAId": "plant",
+      "inputBId": "human",
+      "resultId": "farm",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-087",
+      "inputAId": "machine",
+      "inputBId": "city",
+      "resultId": "factory",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-088",
+      "inputAId": "book",
+      "inputBId": "city",
+      "resultId": "library",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-089",
+      "inputAId": "human",
+      "inputBId": "communication",
+      "resultId": "language",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-090",
+      "inputAId": "knowledge",
+      "inputBId": "rhythm",
+      "resultId": "mathematics",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-091",
+      "inputAId": "writing",
+      "inputBId": "earth",
+      "resultId": "map",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-092",
+      "inputAId": "science",
+      "inputBId": "sky",
+      "resultId": "astronomy",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-093",
+      "inputAId": "communication",
+      "inputBId": "electricity",
+      "resultId": "radio",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-094",
+      "inputAId": "network",
+      "inputBId": "communication",
+      "resultId": "internet",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-095",
+      "inputAId": "computer",
+      "inputBId": "machine",
+      "resultId": "robot",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-096",
+      "inputAId": "communication",
+      "inputBId": "space",
+      "resultId": "satellite",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-097",
+      "inputAId": "human",
+      "inputBId": "writing",
+      "resultId": "story",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-098",
+      "inputAId": "rain",
+      "inputBId": "earth",
+      "resultId": "mud",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-099",
+      "inputAId": "rain",
+      "inputBId": "plant",
+      "resultId": "flower",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-100",
+      "inputAId": "river",
+      "inputBId": "time",
+      "resultId": "sand",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-101",
+      "inputAId": "volcano",
+      "inputBId": "water",
+      "resultId": "stone",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-102",
+      "inputAId": "volcano",
+      "inputBId": "air",
+      "resultId": "ash",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-103",
+      "inputAId": "ocean",
+      "inputBId": "life",
+      "resultId": "fish",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-104",
+      "inputAId": "ocean",
+      "inputBId": "air",
+      "resultId": "storm",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-105",
+      "inputAId": "sky",
+      "inputBId": "energy",
+      "resultId": "lightning",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-106",
+      "inputAId": "space",
+      "inputBId": "science",
+      "resultId": "astronomy",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-107",
+      "inputAId": "coal",
+      "inputBId": "fire",
+      "resultId": "energy",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-108",
+      "inputAId": "steel",
+      "inputBId": "tool",
+      "resultId": "machine",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-109",
+      "inputAId": "paper",
+      "inputBId": "ink",
+      "resultId": "writing",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-110",
+      "inputAId": "paper",
+      "inputBId": "human",
+      "resultId": "book",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-111",
+      "inputAId": "rope",
+      "inputBId": "wood",
+      "resultId": "bridge",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-112",
+      "inputAId": "insect",
+      "inputBId": "plant",
+      "resultId": "life",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-113",
+      "inputAId": "boat",
+      "inputBId": "ocean",
+      "resultId": "trade",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-114",
+      "inputAId": "boat",
+      "inputBId": "river",
+      "resultId": "trade",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-115",
+      "inputAId": "road",
+      "inputBId": "cart",
+      "resultId": "trade",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-116",
+      "inputAId": "factory",
+      "inputBId": "electricity",
+      "resultId": "machine",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-117",
+      "inputAId": "library",
+      "inputBId": "human",
+      "resultId": "school",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-118",
+      "inputAId": "language",
+      "inputBId": "writing",
+      "resultId": "book",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-119",
+      "inputAId": "language",
+      "inputBId": "society",
+      "resultId": "culture",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-120",
+      "inputAId": "map",
+      "inputBId": "cart",
+      "resultId": "trade",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-121",
+      "inputAId": "radio",
+      "inputBId": "human",
+      "resultId": "communication",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-122",
+      "inputAId": "internet",
+      "inputBId": "human",
+      "resultId": "communication",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-123",
+      "inputAId": "satellite",
+      "inputBId": "communication",
+      "resultId": "network",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-124",
+      "inputAId": "story",
+      "inputBId": "society",
+      "resultId": "culture",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-125",
+      "inputAId": "story",
+      "inputBId": "time",
+      "resultId": "history",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-126",
+      "inputAId": "fruit",
+      "inputBId": "human",
+      "resultId": "trade",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-127",
+      "inputAId": "bird",
+      "inputBId": "air",
+      "resultId": "sound",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-128",
+      "inputAId": "fungus",
+      "inputBId": "forest",
+      "resultId": "life",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-129",
+      "inputAId": "farm",
+      "inputBId": "time",
+      "resultId": "village",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-130",
+      "inputAId": "farm",
+      "inputBId": "human",
+      "resultId": "society",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    },
+    {
+      "id": "proto-recipe-131",
+      "inputAId": "steel",
+      "inputBId": "wheel",
+      "resultId": "vehicle",
+      "status": "active",
+      "priority": 0,
+      "variantPrerequisites": []
+    }
+  ]
+}
