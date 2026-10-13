@@ -1,0 +1,14 @@
+{
+  "name": "first-light-volume-1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test",
+    "graph": "node scripts/graph-report.mjs",
+    "build": "node scripts/build-itch.mjs --pack volume-1"
+  },
+  "devDependencies": {
+    "@rollup/wasm-node": "4.64.5",
+    "fflate": "0.8.3"
+  }
+}
