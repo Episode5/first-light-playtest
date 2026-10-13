@@ -2,18 +2,20 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#071719">
 <meta name="description" content="First Light: a deterministic concept-combination discovery game.">
 <title>First Light — Volume 1</title>
 <link id="pack-theme" rel="stylesheet">
 </head>
 <body><main class="phone">
-<header class="top"><div class="topline"><div><span class="wordmark">FIRST LIGHT</span><h1>Discover the world.</h1></div><div id="count" class="count">6 / 100</div></div><div class="track"><i id="bar" class="bar"></i></div></header>
-<section class="mixer" aria-live="polite"><div class="slots"><button id="slot-a" class="slot" type="button"><span>A</span><strong>Choose</strong></button><div class="plus">+</div><button id="slot-b" class="slot" type="button"><span>B</span><strong>Choose</strong></button></div><div class="actions"><button id="combine" class="combine" type="button" disabled>Combine</button><button id="clear" class="clear" type="button" aria-label="Clear selection">×</button></div><p id="status" class="status" role="status">Tap any two concepts.</p></section>
+<header class="top"><div class="topline"><div><span class="wordmark">FIRST LIGHT · VOLUME 1</span><h1>Discover the world.</h1></div><div id="count" class="count">6 / 100</div></div><div class="track"><i id="bar" class="bar"></i></div></header>
+<section class="mixer" aria-live="polite"><div class="slots"><button id="slot-a" class="slot" type="button"><span>A</span><strong>Choose</strong></button><div class="plus">+</div><button id="slot-b" class="slot" type="button"><span>B</span><strong>Choose</strong></button></div><div class="actions"><button id="combine" class="combine" type="button" disabled>Combine</button><button id="hint" class="hint" type="button">Hint</button><button id="clear" class="clear" type="button" aria-label="Clear selection">×</button></div><p id="status" class="status" role="status">Tap any two concepts.</p></section>
 <section id="discovery" class="reveal" hidden><small>new discovery</small><strong id="discovery-name"></strong><p id="discovery-meta"></p><button id="use-discovery" type="button">Use this next →</button></section>
-<section class="world"><div class="head"><div><h2>Concepts</h2><p id="world-sub" class="sub">Primordial</p></div><span id="visible-count" class="sub"></span></div><input id="search" class="search" type="search" placeholder="Find a concept" autocomplete="off" hidden><div id="tabs" class="tabs" aria-label="Discovered categories"></div><div id="elements" class="grid" aria-live="polite"></div></section>
+<section id="completion" class="completion" aria-labelledby="completion-title" hidden><small>100 / 100 discovered</small><h2 id="completion-title">Volume 1 complete</h2><p id="completion-stats"></p><button id="share" type="button">Share</button><p id="next-volume" class="sub"></p></section>
+<section class="world"><div class="head"><div><h2>Concepts</h2><p id="world-sub" class="sub">Primordial</p></div><span id="visible-count" class="sub"></span></div><input id="search" aria-label="Find a concept" class="search" type="search" placeholder="Find a concept" autocomplete="off" hidden><div id="tabs" class="tabs" aria-label="Discovered categories"></div><div id="elements" class="grid" aria-live="polite"></div></section>
 <section id="memory" class="memory" hidden><div class="head"><div><h2>Memory</h2><p class="sub">What you have discovered</p></div></div><div id="journal" class="memory-list"></div><div id="memory-more" class="more"></div></section>
-<details class="utility"><summary>World controls</summary><div class="utility-body"><div><span id="version">Version 0.3</span> · deterministic local play · no AI calls.</div><button id="reset" type="button">Reset discoveries</button></div></details>
+<details class="utility"><summary>World controls</summary><div class="utility-body"><div><span id="version">Version 0.5</span> · deterministic local play · no AI calls.</div><div class="world-actions"><button id="copy-feedback" type="button">Copy feedback</button><button id="mute" type="button" aria-label="Mute discovery sound" aria-pressed="false">Sound: on</button></div><button id="reset" type="button">Reset discoveries</button></div></details>
+<section id="copy-fallback" class="copy-fallback" hidden><label for="copy-text">Text to copy</label><textarea id="copy-text" readonly rows="8"></textarea><button id="close-copy" type="button">Close</button></section>
 <p class="foot">Your progress is stored on this device. Categories organize what you already own; they do not reveal hidden combinations.</p>
 </main><script type="module" src="./app.mjs"></script></body></html>

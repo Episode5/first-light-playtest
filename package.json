@@ -9,6 +9,7 @@
   },
   "devDependencies": {
     "@rollup/wasm-node": "4.64.5",
-    "fflate": "0.8.3"
+    "fflate": "0.8.3",
+    "jsdom": "27.4.0"
   }
 }
