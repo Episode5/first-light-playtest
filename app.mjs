@@ -1,49 +1,33 @@
 import { resolveRecipe } from './dist/core/resolveRecipe.js';
-import { ELEMENTS, GRAPH_VERSION, LEGACY_GRAPH_VERSION, RECIPES, STARTER_IDS, validateSeed } from './seed.mjs';
+import { ELEMENTS, GRAPH_VERSION, RECIPES, STARTER_IDS, validateSeed } from './seed.mjs';
+
+import {PACK} from './active-pack.mjs';
+import {readSave, serializeSave, freshSave} from './save.mjs';
+
+const theme=document.getElementById('pack-theme');
+if(theme) theme.href=PACK.theme;
+document.title=PACK.title;
+document.querySelector('meta[name="theme-color"]').content=PACK.themeColor;
+document.getElementById('version').textContent=`Version ${PACK.version} · ${PACK.volumeLabel}`;
 
 const $ = id => document.getElementById(id);
 const inventory = new Map(ELEMENTS.map(item => [item.id, item]));
-const saveKey = `doodle-god-exp:save:${GRAPH_VERSION}`;
-const legacyKey = `doodle-god-exp:save:${LEGACY_GRAPH_VERSION}`;
-const groupOrder = ['primordial','natural','material','life','making','settlement','knowledge','technology','culture'];
-const groupLabels = new Map(ELEMENTS.map(item => [item.group, item.groupName]));
+const saveKey = PACK.savePrefix + GRAPH_VERSION;
+const groupOrder = Object.keys(PACK.CATEGORY_LABELS);
+const groupLabels = new Map(Object.entries(PACK.CATEGORY_LABELS));
 
 let selectedA = null;
 let selectedB = null;
 let activeGroup = 'all';
 let lastDiscovery = null;
 
-function cleanSave(stored) {
-  if (!stored || !Array.isArray(stored.owned) || !Array.isArray(stored.history)) return null;
-  const owned = new Set(stored.owned.filter(id => inventory.has(id)));
-  for (const starter of STARTER_IDS) owned.add(starter);
-  const history = stored.history
-    .filter(item => item && inventory.has(item.a) && inventory.has(item.b) && inventory.has(item.result))
-    .slice(0, 80);
-  return {owned, history};
-}
-
-function readSave() {
-  const fresh = {owned:new Set(STARTER_IDS), history:[]};
-  try {
-    const currentRaw = localStorage.getItem(saveKey);
-    if (currentRaw) return cleanSave(JSON.parse(currentRaw)) ?? fresh;
-
-    // One-way convenience migration: preserve valid v0.1 discoveries, then save as v0.2.
-    const legacyRaw = localStorage.getItem(legacyKey);
-    if (legacyRaw) {
-      const legacy = cleanSave(JSON.parse(legacyRaw));
-      if (legacy) return legacy;
-    }
-  } catch { /* localStorage may be unavailable; session play still works. */ }
-  return fresh;
-}
-
-let state = readSave();
+let storage;
+try { storage=window.localStorage; } catch { /* session-only play */ }
+let state = readSave(storage, PACK);
 
 function persist() {
   try {
-    localStorage.setItem(saveKey, JSON.stringify({graphVersion:GRAPH_VERSION, owned:[...state.owned], history:state.history}));
+    storage?.setItem(saveKey, serializeSave(state, PACK));
   } catch { /* session-only fallback */ }
 }
 function item(id){ return inventory.get(id); }
@@ -193,8 +177,8 @@ $('use-discovery').addEventListener('click',()=>{
   window.scrollTo({top:0,behavior:'smooth'});
 });
 $('reset').addEventListener('click',()=>{
-  if(!confirm('Reset all First Light v0.2 discoveries on this device?')) return;
-  state={owned:new Set(STARTER_IDS),history:[]}; selectedA=null;selectedB=null;activeGroup='all';hideDiscovery();
+  if(!confirm(`Reset all ${PACK.title} discoveries on this device?`)) return;
+  state=freshSave(PACK); selectedA=null;selectedB=null;activeGroup='all';hideDiscovery();
   $('search').value='';persist();announce('World reset. Six starting concepts remain.');render();
 });
 

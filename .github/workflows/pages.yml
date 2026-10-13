@@ -52,17 +52,27 @@ jobs:
           assert.equal(resolveRecipe('water','human',RECIPES,{ownedElementIds}).type,'no-reaction');
           console.log(`PASS: ${checked.elementCount} concepts, ${RECIPES.length} recipes, ${STARTER_IDS.length} starters, full reachability and reverse-pair symmetry`);
           NODE
+      - name: Validate release invariants and report graph
+        run: |
+          npm test
+          node scripts/graph-report.mjs
       - name: Assemble explicit public-file allowlist
         shell: bash
         run: |
           set -euo pipefail
-          mkdir -p _site/dist/core
+          mkdir -p _site/dist/core _site/packs/volume-1
           cp index.html _site/index.html
           cp app.mjs _site/app.mjs
           cp seed.mjs _site/seed.mjs
+          cp active-pack.mjs _site/active-pack.mjs
+          cp validate-pack.mjs _site/validate-pack.mjs
+          cp save.mjs _site/save.mjs
+          cp packs/volume-1/content.mjs _site/packs/volume-1/content.mjs
+          cp packs/volume-1/pack.mjs _site/packs/volume-1/pack.mjs
+          cp packs/volume-1/theme.css _site/packs/volume-1/theme.css
           cp dist/core/resolveRecipe.js _site/dist/core/resolveRecipe.js
           touch _site/.nojekyll
-          test "$(find _site -type f | wc -l | tr -d ' ')" = 5
+          test "$(find _site -type f | wc -l | tr -d ' ')" = 11
           if grep -rE 'OPENAI_API_KEY|ANTHROPIC_API_KEY|sk-proj-' _site; then
             echo 'Found forbidden secret marker in public package'; exit 1
           fi

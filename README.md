@@ -1,56 +1,52 @@
-# First Light — public playtest
+# First Light — Volume 1
 
-First Light is a deterministic concept-combination discovery game built for fast mobile play.
+A deterministic concept-combination discovery game for quick mobile play. Discover all 100 concepts, starting with six. Progress stays in your browser: no accounts, telemetry, runtime AI, or API calls.
 
-**Play:** https://episode5.github.io/first-light-playtest/
+**[Play First Light](https://episode5.github.io/first-light-playtest/)**
 
-## v0.2 — Mobile Mastery
+## Development
 
-This build concentrates entirely on the core discovery loop.
+Use Node 22 or newer. Run `npm ci`, `npm test`, and `npm run graph`.
+Serve this directory with any static HTTP server to play locally.
 
-- 100 original concepts;
-- six starters;
-- 131 deterministic recipes;
-- nine semantic categories;
-- iPhone-first single-column interface;
-- two explicit experiment slots plus one Combine action;
-- categories appear only when the player owns something in them;
-- search stays hidden until the collection is large enough to need it;
-- discovery memory appears only after the player has actually discovered something;
-- new concepts can immediately become the next experiment;
-- fast repeated partner testing keeps Concept A loaded after a combination;
-- browser-local save data;
-- one-way migration of valid v0.1 discoveries when possible;
-- no account, telemetry, runtime AI or paid API calls.
+`node scripts/build-itch.mjs --pack volume-1` produces
+`build/first-light-volume-1/index.html` and `build/first-light-volume-1.zip`.
+The zip has one self-contained `index.html` at its root. All dependencies are dev-only.
 
-The graph is provisional playtest content rather than released production canon. It is hand-authored and validated for unique unordered pairs, full starter reachability and reverse-pair symmetry.
+## Pack boundary
 
-## Current design goal
+`packs/volume-1/content.mjs` owns concepts, starters, recipes, graph version and category labels.
+`pack.mjs` owns identity, save namespace, share link and the discovery sound manifest.
+`theme.css` owns CSS custom properties and all visual styling, including buttons.
+`active-pack.mjs` selects the Pages pack. `seed.mjs` preserves existing CI imports.
+The deterministic resolver is unchanged.
 
-First Light should become deep through the graph itself rather than through an added metagame.
+A future separately released pack can copy this directory, supply its own content,
+theme and manifest, then build with `--pack <id>`. For Pages, select it in
+`active-pack.mjs` and update the explicit deployment allowlist. No engine changes,
+pack picker or unlock system are required. Future pack save namespaces must be unique;
+only Volume 1 imports the two prototype save keys.
 
-The main content priorities are coherent categories, intuitive or retrospectively defensible recipes, converging paths, cross-category relationships and late discoveries that make earlier concepts interesting again. Raw concept count is not the goal.
+Discovery depth means minimum recipe layers from starters: starters = 0, result =
+`1 + max(input depths)`, minimized over recipes. The report-only prerequisite count
+follows each concept's shallowest recipe recursively, breaking ties by sorted input
+pair then recipe ID in code-point order. It counts distinct prerequisites including
+starters, excluding the target itself; shared branches count once. This is a review
+signal, not a gate or an exact minimum number of Combine actions.
 
-The previous public Operational Chain / Metamyne mechanic test has been removed from the deployed surface. That research remains preserved privately for possible future use; it is not part of the current First Light product direction.
+Saves migrate one way from both earlier versions, unioning valid discoveries.
+Legacy keys remain untouched. A valid current save takes precedence so Reset stays reset.
+If browser storage is unavailable, play continues for the current session.
 
-## Deployment boundary
+## Deployment and review
 
-The private development repository `Doodle-God-Exp` remains separate. This public repository exposes only the standalone game and necessary deterministic runtime modules.
-
-`.github/workflows/pages.yml` packages an explicit allowlist:
-
-- `index.html`
-- `app.mjs`
-- `seed.mjs`
-- `dist/core/resolveRecipe.js`
-- `.nojekyll`
-
-The deployment workflow validates JavaScript syntax, 100-concept reachability, recipe symmetry, self-pair behavior and a known no-reaction case before publishing.
-
-## Feedback
-
-Useful feedback is concrete: one satisfying discovery, one arbitrary or confusing discovery, one moment of inventory friction, and whether a newly discovered concept naturally made you want to try another combination.
+PRs run graph validation and the itch build. Only `main` deploys through
+`.github/workflows/pages.yml`, which publishes an explicit runtime allowlist and
+checks its file count. Source docs, scripts, tests and tooling never enter that artifact.
+The roadmap is in `docs/ROADMAP.md`; future decisions are appended with dates.
 
 ## Originality and access
 
-A free original prototype, not affiliated with the creators of *Doodle God*. Publishing these game files makes them publicly inspectable; this does not grant access to the private development repository. No license is granted by default beyond rights provided by law.
+First Light contains original, hand-authored concepts and recipe content.
+Publishing these files makes the game inspectable. No license is granted by default
+beyond rights provided by law.
