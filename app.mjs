@@ -3,12 +3,16 @@ import { ELEMENTS, GRAPH_VERSION, RECIPES, STARTER_IDS, validateSeed } from './s
 
 import {PACK} from './active-pack.mjs';
 import {readSave, serializeSave, freshSave} from './save.mjs';
+import {findHint} from './hint.mjs';
+import {recordNoReaction,feedbackText,completionText} from './player.mjs';
+import {createDiscoverySound} from './sound.mjs';
 
 const theme=document.getElementById('pack-theme');
 if(theme) theme.href=PACK.theme;
 document.title=PACK.title;
 document.querySelector('meta[name="theme-color"]').content=PACK.themeColor;
 document.getElementById('version').textContent=`Version ${PACK.version} · ${PACK.volumeLabel}`;
+document.querySelector('.wordmark').textContent=`FIRST LIGHT · ${PACK.volumeLabel.toUpperCase()}`;
 
 const $ = id => document.getElementById(id);
 const inventory = new Map(ELEMENTS.map(item => [item.id, item]));
@@ -24,6 +28,8 @@ let lastDiscovery = null;
 let storage;
 try { storage=window.localStorage; } catch { /* session-only play */ }
 let state = readSave(storage, PACK);
+const discoverySound=createDiscoverySound(PACK.sounds.discovery);
+let wasComplete=false;
 
 function persist() {
   try {
@@ -70,8 +76,11 @@ function selectConcept(id){
 function combineSelected(){
   if(selectedA===null || selectedB===null) return;
   const a=selectedA, b=selectedB;
+  state.combinationsTried++;
   const resolution=resolveRecipe(a,b,RECIPES,{ownedElementIds:state.owned});
   if(resolution.type==='no-reaction'){
+    state.noReactions=recordNoReaction(state.noReactions,a,b);
+    persist();
     announce(`${label(a)} + ${label(b)}: no reaction. Try another partner.`);
     selectedB=null;
     render(); return;
@@ -81,13 +90,14 @@ function combineSelected(){
   state.owned.add(result);
   if(novel){
     state.history.unshift({a,b,result});
-    state.history=state.history.slice(0,80);
-    persist();
+    state.history=state.history.slice(0,100);
+    if(!state.muted) discoverySound.play();
     showDiscovery(result,a,b);
     announce(`${label(result)} discovered.`);
   } else {
     announce(`${label(a)} + ${label(b)} → ${label(result)}. Already known.`);
   }
+  persist();
   // Keep A in place for quick hypothesis testing against several partners.
   selectedB=null;
   render();
@@ -161,8 +171,61 @@ function render(){
   b.querySelector('strong').textContent=selectedB?label(selectedB):'Choose';
   a.classList.toggle('filled',selectedA!==null); b.classList.toggle('filled',selectedB!==null);
   $('combine').disabled=selectedA===null || selectedB===null;
+  const complete=state.owned.size===ELEMENTS.length;
+  $('completion').hidden=!complete;
+  $('completion-title').textContent=`${PACK.volumeLabel} complete`;
+  $('completion').querySelector('small').textContent=`${ELEMENTS.length} / ${ELEMENTS.length} discovered`;
+  $('completion-stats').textContent=`${state.combinationsTried} combinations tried${state.trackingSinceUpgrade?' (tracked since v0.5)':''} · ${state.hintsUsed} hints used`;
+  $('next-volume').textContent=PACK.nextVolumeText;
+  $('mute').textContent=state.muted?'Sound: off':'Sound: on';
+  $('mute').setAttribute('aria-pressed',String(state.muted));
+  if(complete&&!wasComplete) announce(`${PACK.volumeLabel} complete! All ${ELEMENTS.length} concepts discovered. ${$('completion-stats').textContent}.`);
+  wasComplete=complete;
   renderConcepts(); renderMemory();
 }
+
+async function copyText(text,success) {
+  try {
+    if(navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(text);
+      announce(success);return;
+    }
+  } catch { /* Fall through to browser-compatible copy. */ }
+  const active=document.activeElement;
+  const field=$('copy-text');
+  $('copy-fallback').hidden=false;
+  field.value=text; field.focus();field.select();field.setSelectionRange(0,text.length);
+  let copied=false;
+  try { copied=document.execCommand('copy'); } catch {}
+  if(copied) {
+    $('copy-fallback').hidden=true;
+    active?.focus();announce(success);
+  } else {
+    announce('Copy is unavailable. Select and copy the text shown below.');
+  }
+}
+
+$('hint').addEventListener('click',()=>{
+  const id=findHint(state,RECIPES);
+  if(id===null){announce('Nothing new can be made with your owned concepts.');return;}
+  state.hintsUsed++;persist();render();
+  announce(`Try ${label(id)}. It can make something new with a concept you own.`);
+});
+$('copy-feedback').addEventListener('click',()=>void copyText(feedbackText(state,PACK),'Feedback copied. Paste it wherever you choose.'));
+$('close-copy').addEventListener('click',()=>{$('copy-fallback').hidden=true;$('copy-feedback').focus();});
+$('share').addEventListener('click',async()=>{
+  const text=completionText(state,PACK);
+  if(navigator.share) {
+    try {await navigator.share({title:PACK.title,text});announce('Share sheet closed.');return;}
+    catch(error){if(error.name==='AbortError'){announce('Sharing cancelled.');return;}}
+  }
+  await copyText(text,'Completion copied. Paste it wherever you choose.');
+});
+$('mute').addEventListener('click',()=>{
+  state.muted=!state.muted;
+  if(state.muted) discoverySound.stop();
+  persist();render();announce(state.muted?'Discovery sound muted.':'Discovery sound on.');
+});
 
 $('combine').addEventListener('click',combineSelected);
 $('clear').addEventListener('click',()=>{selectedA=null;selectedB=null;announce('Selection cleared.');render();});
@@ -178,13 +241,15 @@ $('use-discovery').addEventListener('click',()=>{
 });
 $('reset').addEventListener('click',()=>{
   if(!confirm(`Reset all ${PACK.title} discoveries on this device?`)) return;
-  state=freshSave(PACK); selectedA=null;selectedB=null;activeGroup='all';hideDiscovery();
+  const muted=state.muted;
+  state=freshSave(PACK);state.muted=muted;discoverySound.stop();
+  selectedA=null;selectedB=null;activeGroup='all';hideDiscovery();
+  $('copy-fallback').hidden=true;
   $('search').value='';persist();announce('World reset. Six starting concepts remain.');render();
 });
 
 try{
-  const report=validateSeed();
-  if(report.elementCount!==100) throw Error(`Expected 100 concepts, found ${report.elementCount}`);
+  validateSeed();
   persist();
   render();
 }catch(error){

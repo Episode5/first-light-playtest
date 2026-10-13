@@ -1,5 +1,8 @@
+import {recordNoReaction} from './player.mjs';
+
 export function freshSave(pack) {
-  return {owned:new Set(pack.STARTER_IDS), history:[]};
+  return {owned:new Set(pack.STARTER_IDS), history:[], hintsUsed:0,
+    combinationsTried:0,noReactions:[],muted:false,trackingSinceUpgrade:false};
 }
 
 export function cleanSave(stored, pack) {
@@ -11,7 +14,14 @@ export function cleanSave(stored, pack) {
     .filter(e=>e && [e.a,e.b,e.result].every(id=>ids.has(id)));
   // A valid discovery record is also evidence of ownership.
   for (const e of history) owned.add(e.result);
-  return {owned, history:history.slice(0,100)};
+  const count=value=>Number.isSafeInteger(value)&&value>=0?value:0;
+  const attempts=(Array.isArray(stored.noReactions)?stored.noReactions:[])
+    .filter(e=>e && ids.has(e.a)&&ids.has(e.b));
+  let noReactions=[];
+  for(const e of [...attempts].reverse()) noReactions=recordNoReaction(noReactions,e.a,e.b);
+  return {owned, history:history.filter((e,i)=>history.findIndex(other=>other.result===e.result)===i).slice(0,100),
+    hintsUsed:count(stored.hintsUsed),combinationsTried:count(stored.combinationsTried),noReactions,
+    muted:stored.muted===true,trackingSinceUpgrade:stored.trackingSinceUpgrade===true || !Number.isSafeInteger(stored.combinationsTried)};
 }
 
 export function readSave(storage, pack) {
@@ -26,6 +36,7 @@ export function readSave(storage, pack) {
   for (const key of pack.legacySaveKeys) {
     const legacy=read(key);
     if (!legacy) continue;
+    merged.trackingSinceUpgrade=true;
     for (const id of legacy.owned) merged.owned.add(id);
     for (const entry of legacy.history) {
       if (!merged.history.some(e=>e.result===entry.result)) merged.history.push(entry);
@@ -35,5 +46,5 @@ export function readSave(storage, pack) {
 }
 
 export function serializeSave(state, pack) {
-  return JSON.stringify({graphVersion:pack.GRAPH_VERSION, owned:[...state.owned], history:state.history});
+  return JSON.stringify({...state,graphVersion:pack.GRAPH_VERSION, owned:[...state.owned]});
 }

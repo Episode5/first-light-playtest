@@ -38,6 +38,29 @@ Saves migrate one way from both earlier versions, unioning valid discoveries.
 Legacy keys remain untouched. A valid current save takes precedence so Reset stays reset.
 If browser storage is unavailable, play continues for the current session.
 
+## Player tools (v0.5)
+
+Hint names only the most recently discovered eligible owned concept, never its
+partner or result. Each delivered hint increments the local hint count; when no
+new result is available, the message does not consume a hint. Every valid press
+of Combine counts, including known results and no reactions. Recent no reactions
+are newest-first, unordered-pair deduplicated and capped at 20.
+
+Copy feedback exports plain text on request. If clipboard access fails, a copy
+fallback runs and then a selectable text field remains available when necessary.
+Completion at 100/100 offers the system Share sheet, falling back to copy; cancelling
+the Share sheet does nothing. Nothing is sent automatically.
+
+Earlier saves have no attempt counters. Their feedback and completion summaries
+explicitly say that combinations are tracked since v0.5. Reset clears discoveries,
+history, attempts and counters; it preserves the locally remembered mute preference.
+
+The pack's discovery sound defaults to a Web Audio chime, started only by a discovery
+gesture. To supply an asset, change `sounds.discovery` in the pack manifest to
+`{type:'file', src:'./packs/volume-1/sounds/discovery.mp3'}`. Add that file to the
+Pages allowlist and update its count. The itch builder automatically embeds local
+pack audio as a data URL, keeping the release a single offline HTML file.
+
 ## Deployment and review
 
 PRs run graph validation and the itch build. Only `main` deploys through

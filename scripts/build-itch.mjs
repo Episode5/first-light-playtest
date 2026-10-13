@@ -1,5 +1,5 @@
 import {readFile,writeFile,mkdir} from 'node:fs/promises';
-import {resolve,dirname} from 'node:path';
+import {resolve,dirname,extname,relative} from 'node:path';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 import {rollup} from '@rollup/wasm-node';
 import {zipSync,strToU8} from 'fflate';
@@ -12,8 +12,20 @@ if(args.length!==2 || args[0]!=='--pack' || !/^[a-z0-9-]+$/.test(args[1])) {
 const name=args[1];
 const entry=resolve(root,`packs/${name}/pack.mjs`);
 const {PACK}=await import(pathToFileURL(entry));
+const embeddedPack=structuredClone(PACK);
+for(const sound of Object.values(embeddedPack.sounds)) {
+  if(sound.type!=='file') continue;
+  const asset=resolve(root,sound.src);
+  const within=relative(resolve(root,`packs/${name}`),asset);
+  if(within.startsWith('..')||/^[a-z]+:/i.test(sound.src)) throw Error('Sound assets must be local to the selected pack');
+  const mime={'.mp3':'audio/mpeg','.wav':'audio/wav','.ogg':'audio/ogg','.m4a':'audio/mp4'}[extname(asset)];
+  if(!mime) throw Error('Unsupported sound asset extension');
+  sound.src=`data:${mime};base64,${(await readFile(asset)).toString('base64')}`;
+}
 const bundle=await rollup({input:resolve(root,'app.mjs'),plugins:[{
-  name:'active-pack',resolveId(source){if(source.endsWith('/active-pack.mjs')) return entry;}
+  name:'active-pack',
+  resolveId(source){if(source.endsWith('/active-pack.mjs')) return '\0active-pack';},
+  load(id){if(id==='\0active-pack')return `export const PACK=${JSON.stringify(embeddedPack)};`;}
 }]});
 const result=await bundle.generate({format:'iife'});
 await bundle.close();
